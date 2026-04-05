@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="POS.Application/POS.Application.csproj" />
+  <Project Path="POS.Domain/POS.Domain.csproj" />
+  <Project Path="POS.Infrastructure/POS.Infrastructure.csproj" />
+  <Project Path="POS.Tests/POS.Tests.csproj" />
+  <Project Path="POS.Web/POS.Web.csproj" />
+</Solution>
