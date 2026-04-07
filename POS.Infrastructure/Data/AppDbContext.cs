@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using POS.Domain.Entities;
 using System;
@@ -11,11 +11,17 @@ namespace POS.Infrastructure.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<Branch> Branches => Set<Branch>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder); // 👈 Required — configures Identity tables
+
+            builder.Entity<AppUser>()
+                .HasOne(u=>u.Branch)
+                .WithMany(b=>b.Users)
+                .HasForeignKey(u=>u.BranchId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
