@@ -12,6 +12,8 @@ namespace POS.Infrastructure.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Branch> Branches => Set<Branch>();
+        public DbSet<Category> Categories => Set<Category>();
+        public DbSet<Product> Products => Set<Product>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
