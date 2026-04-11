@@ -10,6 +10,8 @@ namespace POS.Domain.Entities
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }
         public int? ParentCategoryId { get; set; }
-        public ICollection<Category> SubCategory { get; set; } = new List<Category>();
+        public Category? ParentCategory { get; set; }
+        public ICollection<Category> SubCategories { get; set; } = new List<Category>();
+        public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
     }
 }

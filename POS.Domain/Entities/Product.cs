@@ -21,5 +21,9 @@ namespace POS.Domain.Entities
         public bool IsActive { get; set; } = true;
         public int BranchId {  get; set; }
         public Branch Branch { get; set; } = default!;
+        public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
+        //public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        //public ICollection<StockMovement> StockMovements { get; set; } = new List<StockMovement>();
+
     }
 }
