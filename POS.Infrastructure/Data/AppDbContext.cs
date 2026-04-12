@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using POS.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using System.Text;
 
 namespace POS.Infrastructure.Data
@@ -17,9 +18,9 @@ namespace POS.Infrastructure.Data
         public DbSet<Product> Products => Set<Product>();
 
         public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
-        //public DbSet<Supplier> Suppliers => Set<Supplier>();
-        //public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
-        //public DbSet<PurchaseOrderItem> PurchaseOrderItems => Set<PurchaseOrderItem>();
+        public DbSet<Supplier> Suppliers => Set<Supplier>();
+        public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
+        public DbSet<PurchaseOrderItem> PurchaseOrderItems => Set<PurchaseOrderItem>();
         //public DbSet<StockMovement> StockMovements => Set<StockMovement>();
         //public DbSet<Table> Tables => Set<Table>();
         //public DbSet<Order> Orders => Set<Order>();
@@ -34,8 +35,8 @@ namespace POS.Infrastructure.Data
             builder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted);
             //builder.Entity<Order>().HasQueryFilter(p => !p.IsDeleted);
             builder.Entity<Category>().HasQueryFilter(p => !p.IsDeleted);
-            builder.Entity<ProductCategory>().HasQueryFilter(pc => !pc.Category.IsDeleted
-);
+            builder.Entity<ProductCategory>().HasQueryFilter(pc => !pc.Category.IsDeleted);
+            builder.Entity<PurchaseOrderItem>().HasQueryFilter(poi => !poi.Product.IsDeleted);
 
 
 
@@ -86,15 +87,15 @@ namespace POS.Infrastructure.Data
             });*/
 
             // ── PurchaseOrder decimals ────────────────────────────────────────────
-            /*builder.Entity<PurchaseOrder>(e =>
+            builder.Entity<PurchaseOrder>(e =>
             {
                 e.Property(p => p.TotalAmount).HasColumnType("decimal(18,2)");
-            });*/
+            });
 
-            /*builder.Entity<PurchaseOrderItem>(e =>
+            builder.Entity<PurchaseOrderItem>(e =>
             {
                 e.Property(i => i.UnitCost).HasColumnType("decimal(18,2)");
-            });*/
+            });
             // Cascade behavour
             /*builder.Entity<Order>()
                 .HasMany(o => o.Items)
