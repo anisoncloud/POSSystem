@@ -12,6 +12,6 @@ namespace POS.Domain.Entities
         public bool IsActive { get; set; } = true;
         public ICollection<AppUser> Users { get; set; } = new List<AppUser>();
         public ICollection<Product> Products { get; set; } = new List<Product>();
-        //public ICollection<Order> Orders { get; set; } = new List<Order>();
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

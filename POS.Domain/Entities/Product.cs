@@ -23,8 +23,8 @@ namespace POS.Domain.Entities
         public Branch Branch { get; set; } = default!;
         public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
         public ICollection<PurchaseOrderItem> PurchaseOrderItems { get; set;} = new List<PurchaseOrderItem>();
-        //public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
-        //public ICollection<StockMovement> StockMovements { get; set; } = new List<StockMovement>();
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public ICollection<StockMovement> StockMovements { get; set; } = new List<StockMovement>();
 
     }
 }

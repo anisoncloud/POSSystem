@@ -15,16 +15,15 @@ namespace POS.Infrastructure.Data
         public DbSet<Branch> Branches => Set<Branch>();
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Product> Products => Set<Product>();
-
         public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
         public DbSet<Supplier> Suppliers => Set<Supplier>();
         public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
         public DbSet<PurchaseOrderItem> PurchaseOrderItems => Set<PurchaseOrderItem>();
-        //public DbSet<StockMovement> StockMovements => Set<StockMovement>();
+        public DbSet<StockMovement> StockMovements => Set<StockMovement>();
         public DbSet<Table> Tables => Set<Table>();
         public DbSet<Order> Orders => Set<Order>();
-        //public DbSet<OrderItem> OrderItems => Set<OrderItem>();
-        //public DbSet<Payment> Payments => Set<Payment>();
+        public DbSet<OrderItem> OrderItems => Set<OrderItem>();
+        public DbSet<Payment> Payments => Set<Payment>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -36,8 +35,9 @@ namespace POS.Infrastructure.Data
             builder.Entity<Category>().HasQueryFilter(p => !p.IsDeleted);
             builder.Entity<ProductCategory>().HasQueryFilter(pc => !pc.Category.IsDeleted);
             builder.Entity<PurchaseOrderItem>().HasQueryFilter(poi => !poi.Product.IsDeleted);
-
-
+            builder.Entity<OrderItem>().HasQueryFilter(poi => !poi.Order.IsDeleted);
+            builder.Entity<Payment>().HasQueryFilter(poi => !poi.Order.IsDeleted);
+            builder.Entity<StockMovement>().HasQueryFilter(poi => !poi.Product.IsDeleted);
 
             //ProductCategory composite key
             builder.Entity<ProductCategory>()
@@ -71,19 +71,19 @@ namespace POS.Infrastructure.Data
                 e.Property(o => o.DiscountValue).HasColumnType("decimal(18,2)");
             });
             // ── OrderItem decimals ────────────────────────────────────────────────
-            /*builder.Entity<OrderItem>(e =>
+            builder.Entity<OrderItem>(e =>
             {
                 e.Property(i => i.UnitPrice).HasColumnType("decimal(18,2)");       // ← was missing
                 e.Property(i => i.DiscountAmount).HasColumnType("decimal(18,2)");  // ← was missing
                 e.Property(i => i.TaxAmount).HasColumnType("decimal(18,2)");       // ← was missing
                 e.Property(i => i.LineTotal).HasColumnType("decimal(18,2)");       // ← was missing
-            });*/
+            });
 
             // ── Payment decimals ──────────────────────────────────────────────────
-            /*builder.Entity<Payment>(e =>
+            builder.Entity<Payment>(e =>
             {
                 e.Property(p => p.Amount).HasColumnType("decimal(18,2)");          // ← was missing
-            });*/
+            });
 
             // ── PurchaseOrder decimals ────────────────────────────────────────────
             builder.Entity<PurchaseOrder>(e =>
@@ -109,18 +109,37 @@ namespace POS.Infrastructure.Data
                 .HasForeignKey(poi => poi.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Cascade behavour
-            /*builder.Entity<Order>()
-                .HasMany(o => o.Items)
+            //Order → Items
+            builder.Entity<Order>()
+                .HasMany(o =>o.Items)
                 .WithOne(i => i.Order)
                 .HasForeignKey(i => i.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
-
+                .OnDelete(DeleteBehavior.Restrict);
+            //Order → Payment
             builder.Entity<Order>()
                 .HasMany(o => o.Payments)
                 .WithOne(p => p.Order)
                 .HasForeignKey(p => p.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);*/
+                .OnDelete(DeleteBehavior.Restrict);
+            // Order → Table (optional relationship, Table can be null for takeaway orders)
+            builder.Entity<Order>()
+                .HasOne(o => o.Table)
+                .WithMany(t => t.Orders)
+                .HasForeignKey(o => o.TableId)
+                .IsRequired(false)                  // ← Table is nullable (for takeaway/delivery)
+                .OnDelete(DeleteBehavior.Restrict); // ← breaks the cascade cycle
+
+            // Order → Branch
+            builder.Entity<Order>()
+                .HasOne(o => o.Branch)
+                .WithMany(b=>b.Orders)
+                .HasForeignKey(o => o.BranchId)
+                .OnDelete(DeleteBehavior.Restrict); // ← breaks the cascade cycle
+            builder.Entity<StockMovement>()
+                .HasOne(p => p.Product)               
+                .WithMany()
+                .HasForeignKey(p=>p.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

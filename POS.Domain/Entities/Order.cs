@@ -26,7 +26,7 @@ namespace POS.Domain.Entities
         public string? Notes {  get; set; }
         public string CashierId { get; set; } = default!;
         public AppUser Cashier { get; set; } = default!;
-        //public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
-        //public ICollection<Payment> Payments { get; set; } = new List<Payment>();
+        public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }
 }

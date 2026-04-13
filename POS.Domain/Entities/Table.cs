@@ -12,6 +12,6 @@ namespace POS.Domain.Entities
         public TableStatus Status { get; set; } = TableStatus.Available;
         public int BranchId { get; set; }
         public Branch Branch { get; set; } = default!;
-        //public ICollection<Order> Orders { get; set; } = new List<Order>();
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

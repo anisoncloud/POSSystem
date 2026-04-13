@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POS.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using POS.Infrastructure.Data;
 namespace POS.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260413184453_tblOrderAndOrderItemAndPayment")]
+    partial class tblOrderAndOrderItemAndPayment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -680,57 +683,6 @@ namespace POS.Infrastructure.Migrations
                     b.ToTable("PurchaseOrderItems");
                 });
 
-            modelBuilder.Entity("POS.Domain.Entities.StockMovement", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BalanceAfter")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreaedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("MovementType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProductId1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Reference")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductId1");
-
-                    b.ToTable("StockMovements");
-                });
-
             modelBuilder.Entity("POS.Domain.Entities.Supplier", b =>
                 {
                     b.Property<int>("Id")
@@ -1007,21 +959,6 @@ namespace POS.Infrastructure.Migrations
                     b.Navigation("PurchaseOrder");
                 });
 
-            modelBuilder.Entity("POS.Domain.Entities.StockMovement", b =>
-                {
-                    b.HasOne("POS.Domain.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("POS.Domain.Entities.Product", null)
-                        .WithMany("StockMovements")
-                        .HasForeignKey("ProductId1");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("POS.Domain.Entities.Table", b =>
                 {
                     b.HasOne("POS.Domain.Entities.Branch", "Branch")
@@ -1063,8 +1000,6 @@ namespace POS.Infrastructure.Migrations
                     b.Navigation("ProductCategories");
 
                     b.Navigation("PurchaseOrderItems");
-
-                    b.Navigation("StockMovements");
                 });
 
             modelBuilder.Entity("POS.Domain.Entities.PurchaseOrder", b =>
