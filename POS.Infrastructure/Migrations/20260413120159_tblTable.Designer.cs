@@ -12,8 +12,8 @@ using POS.Infrastructure.Data;
 namespace POS.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260412180516_tblPurchaseOrderItem")]
-    partial class tblPurchaseOrderItem
+    [Migration("20260413120159_tblTable")]
+    partial class tblTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -538,6 +538,46 @@ namespace POS.Infrastructure.Migrations
                     b.ToTable("Suppliers");
                 });
 
+            modelBuilder.Entity("POS.Domain.Entities.Table", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreaedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TableNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
+
+                    b.ToTable("Tables");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -612,7 +652,7 @@ namespace POS.Infrastructure.Migrations
             modelBuilder.Entity("POS.Domain.Entities.Product", b =>
                 {
                     b.HasOne("POS.Domain.Entities.Branch", "Branch")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -661,15 +701,15 @@ namespace POS.Infrastructure.Migrations
             modelBuilder.Entity("POS.Domain.Entities.PurchaseOrderItem", b =>
                 {
                     b.HasOne("POS.Domain.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("PurchaseOrderItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("POS.Domain.Entities.PurchaseOrder", "PurchaseOrder")
                         .WithMany("Items")
                         .HasForeignKey("PurchaseOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Product");
@@ -677,8 +717,21 @@ namespace POS.Infrastructure.Migrations
                     b.Navigation("PurchaseOrder");
                 });
 
+            modelBuilder.Entity("POS.Domain.Entities.Table", b =>
+                {
+                    b.HasOne("POS.Domain.Entities.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+                });
+
             modelBuilder.Entity("POS.Domain.Entities.Branch", b =>
                 {
+                    b.Navigation("Products");
+
                     b.Navigation("Users");
                 });
 
@@ -692,6 +745,8 @@ namespace POS.Infrastructure.Migrations
             modelBuilder.Entity("POS.Domain.Entities.Product", b =>
                 {
                     b.Navigation("ProductCategories");
+
+                    b.Navigation("PurchaseOrderItems");
                 });
 
             modelBuilder.Entity("POS.Domain.Entities.PurchaseOrder", b =>

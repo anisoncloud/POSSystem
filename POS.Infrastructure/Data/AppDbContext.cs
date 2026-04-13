@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using POS.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -22,8 +21,8 @@ namespace POS.Infrastructure.Data
         public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
         public DbSet<PurchaseOrderItem> PurchaseOrderItems => Set<PurchaseOrderItem>();
         //public DbSet<StockMovement> StockMovements => Set<StockMovement>();
-        //public DbSet<Table> Tables => Set<Table>();
-        //public DbSet<Order> Orders => Set<Order>();
+        public DbSet<Table> Tables => Set<Table>();
+        public DbSet<Order> Orders => Set<Order>();
         //public DbSet<OrderItem> OrderItems => Set<OrderItem>();
         //public DbSet<Payment> Payments => Set<Payment>();
 
@@ -33,7 +32,7 @@ namespace POS.Infrastructure.Data
 
             // Global soft delete query filter
             builder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted);
-            //builder.Entity<Order>().HasQueryFilter(p => !p.IsDeleted);
+            builder.Entity<Order>().HasQueryFilter(p => !p.IsDeleted);
             builder.Entity<Category>().HasQueryFilter(p => !p.IsDeleted);
             builder.Entity<ProductCategory>().HasQueryFilter(pc => !pc.Category.IsDeleted);
             builder.Entity<PurchaseOrderItem>().HasQueryFilter(poi => !poi.Product.IsDeleted);
@@ -62,7 +61,7 @@ namespace POS.Infrastructure.Data
             });
 
             //Order
-            /*builder.Entity<Order>(e =>
+            builder.Entity<Order>(e =>
             {
                 e.HasIndex(o => o.InvoiceNumber).IsUnique();
                 e.Property(o => o.SubTotal).HasColumnType("decimal(18,2)");
@@ -70,7 +69,7 @@ namespace POS.Infrastructure.Data
                 e.Property(o => o.TaxAmount).HasColumnType("decimal(18,2)");
                 e.Property(o => o.DiscountAmount).HasColumnType("decimal(18,2)");
                 e.Property(o => o.DiscountValue).HasColumnType("decimal(18,2)");
-            });*/
+            });
             // ── OrderItem decimals ────────────────────────────────────────────────
             /*builder.Entity<OrderItem>(e =>
             {
@@ -96,6 +95,20 @@ namespace POS.Infrastructure.Data
             {
                 e.Property(i => i.UnitCost).HasColumnType("decimal(18,2)");
             });
+            
+            //PurchaseOrderItem->PurchaseOrder
+            builder.Entity<PurchaseOrderItem>()
+                .HasOne(poi => poi.PurchaseOrder)
+                .WithMany(po => po.Items)
+                .HasForeignKey(poi => poi.PurchaseOrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+            //PurchaseOrderItem->Product
+            builder.Entity<PurchaseOrderItem>()
+                .HasOne(poi => poi.Product)
+                .WithMany(p => p.PurchaseOrderItems)
+                .HasForeignKey(poi => poi.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // Cascade behavour
             /*builder.Entity<Order>()
                 .HasMany(o => o.Items)

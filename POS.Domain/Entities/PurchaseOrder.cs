@@ -1,4 +1,5 @@
-﻿using POS.Domain.Enums;
+﻿using POS.Domain.Entities;
+using POS.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,3 +20,6 @@ namespace POS.Domain.Entities
         public ICollection<PurchaseOrderItem> Items { get; set; } = new List<PurchaseOrderItem>();
     }
 }
+
+
+
