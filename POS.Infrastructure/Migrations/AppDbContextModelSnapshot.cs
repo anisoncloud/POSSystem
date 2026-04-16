@@ -709,9 +709,6 @@ namespace POS.Infrastructure.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductId1")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -725,8 +722,6 @@ namespace POS.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductId1");
 
                     b.ToTable("StockMovements");
                 });
@@ -1010,14 +1005,10 @@ namespace POS.Infrastructure.Migrations
             modelBuilder.Entity("POS.Domain.Entities.StockMovement", b =>
                 {
                     b.HasOne("POS.Domain.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("StockMovements")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("POS.Domain.Entities.Product", null)
-                        .WithMany("StockMovements")
-                        .HasForeignKey("ProductId1");
 
                     b.Navigation("Product");
                 });

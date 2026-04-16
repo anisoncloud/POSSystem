@@ -135,9 +135,11 @@ namespace POS.Infrastructure.Data
                 .WithMany(b=>b.Orders)
                 .HasForeignKey(o => o.BranchId)
                 .OnDelete(DeleteBehavior.Restrict); // ← breaks the cascade cycle
+            
+            //StockMovement->Product
             builder.Entity<StockMovement>()
                 .HasOne(p => p.Product)               
-                .WithMany()
+                .WithMany(sm=>sm.StockMovements)
                 .HasForeignKey(p=>p.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
