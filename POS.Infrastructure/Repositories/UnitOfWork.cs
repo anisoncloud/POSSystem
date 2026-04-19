@@ -12,35 +12,15 @@ namespace POS.Infrastructure.Repositories
 
         private readonly AppDbContext _context;
         public IProductRepository Products { get; }
-
         public IOrderRepository Orders { get; }
-
         public IRepository<Category> Categories { get; }
-
         public IRepository<Supplier> Suppliers { get; }
-
         public IRepository<PurchaseOrder> PurchaseOrders { get; }
-
         public IStockRepository StockMovements { get; }
-
         public IRepository<Table> Tables { get; }
-
         public IRepository<Payment> Payments { get; }
 
-        public Task<int> CommitAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task RollBackAsync()
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public UnitOfWork(AppDbContext context)
         {
@@ -50,8 +30,24 @@ namespace POS.Infrastructure.Repositories
             Categories = new GenericRepository<Category>(context);
             Suppliers = new GenericRepository<Supplier>(context);
             PurchaseOrders = new GenericRepository<PurchaseOrder>(context);
-            StockMovements = new stock (context);
+            StockMovements = new StockRepository(context);
+            Tables = new GenericRepository<Table>(context);
+            Payments = new GenericRepository<Payment>(context);
+        }
 
+        public async Task<int> CommitAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
+        }
+
+        public async Task RollBackAsync()
+        {
+            await _context.Database.RollbackTransactionAsync();
         }
     }
 }
