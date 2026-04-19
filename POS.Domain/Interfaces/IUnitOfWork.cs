@@ -7,7 +7,7 @@ namespace POS.Domain.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IProductRepository Proucts { get; }
+        IProductRepository Products { get; }
         IOrderRepository Orders { get; }
         IRepository<Category> Categories {  get; }
         IRepository<Supplier> Suppliers { get; }
