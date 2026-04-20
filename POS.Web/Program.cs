@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using POS.Application.Interfaces;
+using POS.Application.Services;
+using POS.Domain.Interfaces;
 using POS.Infrastructure.Data;
+using POS.Infrastructure.Repositories;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +16,16 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     sql=>sql.MigrationsAssembly("POS.Infrastructure")
     ));
 
+// All service registrations inside builder.Services
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IBarcodeService, BarcodeService>();
+builder.Services.AddScoped<IPdfInvoiceService, PdfInvoiceService>();
+builder.Services.AddScoped<ITableService, TableService>();
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
