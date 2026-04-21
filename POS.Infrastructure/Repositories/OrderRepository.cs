@@ -27,7 +27,7 @@ namespace POS.Infrastructure.Repositories
             return $"{prefix}{sequenc:D4}";
         }
 
-        public async Task<IEnumerable<Order>> GetActiveTableOrderAsync(int branchId)
+        public async Task<IEnumerable<Order>> GetActiveTableOrdersAsync(int branchId)
         {
             return await _dbSet
                 .Include(o => o.Table)
@@ -40,13 +40,13 @@ namespace POS.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Order>> GetByDateRanceAsync(DateTime from, DateTime to, int branchId)
+        public async Task<IEnumerable<Order>> GetByDateRangeAsync(DateTime from, DateTime to, int branchId)
         {
             return await _dbSet.Include(o => o.Items)
                 .Include(o => o.Payments)
                 .Where(o => o.BranchId == branchId &&
-                o.CreaedAt >= from &&
-                o.CreaedAt <= to &&
+                o.CreatedAt >= from &&
+                o.CreatedAt <= to &&
                 o.Status == OrderStatus.Completed)
                 .AsNoTracking()
                 .ToListAsync();

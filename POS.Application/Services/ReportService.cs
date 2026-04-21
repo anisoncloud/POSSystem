@@ -1,4 +1,5 @@
-﻿using POS.Application.Interfaces;
+﻿using POS.Application.DTOs;
+using POS.Application.Interfaces;
 using POS.Domain.Enums;
 using POS.Domain.Interfaces;
 using System;

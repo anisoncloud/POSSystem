@@ -194,7 +194,7 @@ namespace POS.Application.Services
         // ── Low stock alerts ──────────────────────────────────────────────────
         public async Task<IEnumerable<ProductDto>> GetLowStockAlertsAsync(int branchId)
         {
-            var products = await _uow.Products.GetLowStockProductsAsync(branchId);
+            var products = await _uow.Products.GetLowStockProductAsync(branchId);
             return _mapper.Map<IEnumerable<ProductDto>>(products);
         }
 

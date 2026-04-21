@@ -16,7 +16,7 @@ namespace POS.Domain.Entities
         public decimal TaxRate { get; set; } = 0;
         public int StockQuantity {  get; set; }
         public int LowStockThreshold {  get; set; } = 10;
-        public UnitType TnitType { get; set; } = UnitType.Piece;
+        public UnitType UnitType { get; set; } = UnitType.Piece;
         public string? ImageUrl {  get; set; }
         public bool IsActive { get; set; } = true;
         public int BranchId {  get; set; }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using POS.Application.Interfaces;
+using POS.Application.Mappings;
 using POS.Application.Services;
 using POS.Domain.Entities;
 using POS.Domain.Interfaces;
@@ -19,6 +20,9 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     builder.Configuration.GetConnectionString("PosDefaultConnection"),
     sql=>sql.MigrationsAssembly("POS.Infrastructure")
     ));
+
+// 2. AutoMapper ✅
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 // All service registrations inside builder.Services
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

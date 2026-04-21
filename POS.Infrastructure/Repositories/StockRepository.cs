@@ -20,7 +20,7 @@ namespace POS.Infrastructure.Repositories
             return await _dbSet
                 .Include(s => s.Product)
                 .Where(s => s.ProductId == productId)
-                .OrderByDescending(s => s.CreaedAt)
+                .OrderByDescending(s => s.CreatedAt)
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -37,7 +37,7 @@ namespace POS.Infrastructure.Repositories
                 MovementType = type,
                 Reference = reference,
                 BalanceAfter = product.StockQuantity + qty,
-                CreaedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow
             };
             await _dbSet.AddAsync(movement);
         }

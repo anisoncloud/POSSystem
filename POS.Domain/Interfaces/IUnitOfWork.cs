@@ -15,6 +15,7 @@ namespace POS.Domain.Interfaces
         IStockRepository StockMovements { get; }
         IRepository<Table> Tables { get; }
         IRepository<Payment> Payments { get; }
+        IRepository<OrderItem> OrderItems { get; }
         Task<int> CommitAsync();
         Task RollBackAsync();
     }

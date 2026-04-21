@@ -19,8 +19,9 @@ namespace POS.Infrastructure.Repositories
         public IStockRepository StockMovements { get; }
         public IRepository<Table> Tables { get; }
         public IRepository<Payment> Payments { get; }
+        public IRepository<OrderItem> OrderItems { get; }
 
-        
+
 
         public UnitOfWork(AppDbContext context)
         {
@@ -33,6 +34,7 @@ namespace POS.Infrastructure.Repositories
             StockMovements = new StockRepository(context);
             Tables = new GenericRepository<Table>(context);
             Payments = new GenericRepository<Payment>(context);
+            OrderItems = new GenericRepository<OrderItem>(context);
         }
 
         public async Task<int> CommitAsync()
