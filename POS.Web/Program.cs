@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using POS.Application.Interfaces;
 using POS.Application.Services;
+using POS.Domain.Entities;
 using POS.Domain.Interfaces;
 using POS.Infrastructure.Data;
 using POS.Infrastructure.Repositories;
@@ -10,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//----DataBase------------------------------------------------------
 builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlServer(
     builder.Configuration.GetConnectionString("PosDefaultConnection"),
@@ -26,6 +30,24 @@ builder.Services.AddScoped<IBarcodeService, BarcodeService>();
 builder.Services.AddScoped<IPdfInvoiceService, PdfInvoiceService>();
 builder.Services.AddScoped<ITableService, TableService>();
 builder.Services.AddHttpContextAccessor();
+
+// ── Identity ──────────────────────────────────────────────────────────────────
+builder.Services.AddIdentity<AppUser, IdentityRole>(opt =>
+{
+    opt.Password.RequireDigit = true;
+    opt.Password.RequiredLength = 8;
+    opt.Lockout.MaxFailedAccessAttempts = 5;
+})
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(opt =>
+{
+    opt.LoginPath = "/Account/Login";
+    opt.AccessDeniedPath = "/Account/AccessDenied";
+    opt.ExpireTimeSpan = TimeSpan.FromHours(8);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

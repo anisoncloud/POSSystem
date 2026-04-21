@@ -1,24 +1,26 @@
-﻿using POS.Application.ViewModels;
+﻿
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using POS.Application.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection.Metadata;
 using System.Text;
+using POS.Application.Interfaces;
 
 
 
 namespace POS.Application.Services
 {
-    public class PdfInvoiceService
+    public class PdfInvoiceService : IPdfInvoiceService
     {
         public byte[] GenerateInvoicePdf(OrderDetailViewModel order)
         {
             QuestPDF.Settings.License = LicenseType.Community;
 
-            return Document.Create(container =>
+            return QuestPDF.Fluent.Document.Create(container =>
             {
                 container.Page(page =>
                 {
@@ -38,7 +40,7 @@ namespace POS.Application.Services
                 });
             }).GeneratePdf();
 
-            void ComposeHeader(IContainer c)
+            void ComposeHeader(QuestPDF.Infrastructure.IContainer c)
             {
                 c.Row(row =>
                 {
@@ -57,7 +59,7 @@ namespace POS.Application.Services
                 });
             }
 
-            void ComposeContent(IContainer c, OrderDetailViewModel order)
+            void ComposeContent(QuestPDF.Infrastructure.IContainer c, OrderDetailViewModel order)
             {
                 c.Column(col =>
                 {

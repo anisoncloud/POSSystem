@@ -31,12 +31,11 @@ namespace POS.Application.DTOs
         public int LowStockThreshold { get; set; } = 10;
 
         public UnitType UnitType { get; set; } = UnitType.Piece;
-
         public bool IsActive { get; set; } = true;
 
         [Required(ErrorMessage = "At least one category is required")]
         public List<int> CategoryIds { get; set; } = new();
-
         public IFormFile? Image { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

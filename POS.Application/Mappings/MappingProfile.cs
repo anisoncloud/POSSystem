@@ -20,7 +20,7 @@ namespace POS.Application.Mappings
 
 
             CreateMap<CreateProductDto, Product>()
-                .ForMember(d => d.ImageUrl, o => o.Ignore())  // handled manually in service
+             //.ForMember(d => d.ImageUrl, o => o.Ignore())  // handled manually in service
             .ForMember(d => d.SKU, o => o.Ignore())  // generated in service
             .ForMember(d => d.Barcode, o => o.Ignore())  // generated in service
             .ForMember(d => d.BranchId, o => o.Ignore())  // set from claims in service
@@ -28,7 +28,7 @@ namespace POS.Application.Mappings
             
             
             CreateMap<UpdateProductDto, Product>()
-                .ForMember(d => d.ImageUrl, o => o.Ignore())  // handled manually in service
+             //.ForMember(d => d.ImageUrl, o => o.Ignore())  // handled manually in service
             .ForMember(d => d.ProductCategories, o => o.Ignore()) // synced manually
             .ForMember(d => d.SKU, o => o.Ignore())  // never changes on update
             .ForMember(d => d.Barcode, o => o.Ignore())  // use RegenerateBarcode instead

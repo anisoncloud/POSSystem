@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using POS.Application.DTOs;
+using POS.Application.Interfaces;
+using POS.Domain.Entities;
 using POS.Domain.Enums;
 using POS.Domain.Interfaces;
 using System;
@@ -8,7 +10,7 @@ using System.Text;
 
 namespace POS.Application.Services
 {
-    public class TableService
+    public class TableService : ITableService
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;

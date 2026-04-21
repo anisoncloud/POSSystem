@@ -1,4 +1,5 @@
-﻿using System;
+﻿using POS.Application.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Text;
 

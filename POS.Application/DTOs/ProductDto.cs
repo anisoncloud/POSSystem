@@ -19,6 +19,8 @@ namespace POS.Application.DTOs
         public int LowStockThreshold {  get; set; }
         public UnitType UnitType { get; set; }
         public bool IsActive {  get; set; }
+        public string? ImageUrl { get; set; } 
+        public int BranchId { get; set; }
         public bool IsLowStock => StockQuantity<=LowStockThreshold;
         public List<CategoryDto> Categories { get; set; } = new();
 

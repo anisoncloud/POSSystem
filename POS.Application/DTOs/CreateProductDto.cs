@@ -26,12 +26,13 @@ namespace POS.Application.DTOs
         [Range(0, int.MaxValue, ErrorMessage ="Initial stock can not be Negative")]
         public int InitialStock {  get; set; }
         [Range(1, int.MaxValue, ErrorMessage ="Low stock threashold must be at least 1")]
-        public int LowStockThreashold { get; set; } = 10;
+        public int LowStockThreshold { get; set; } = 10;
         public UnitType UnitType { get; set; } = UnitType.Piece;
         [Required(ErrorMessage ="At least one category is required")]
         [MinLength(1, ErrorMessage ="Select at least one category")]
         public List<int> CategoryIds { get; set; } = new();
         public IFormFile? Image {  get; set; }
+        public string? ImageUrl { get; set; }
 
     }
 }

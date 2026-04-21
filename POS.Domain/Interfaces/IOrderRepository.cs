@@ -9,8 +9,8 @@ namespace POS.Domain.Interfaces
     {
         Task<Order?> GetWithItemsAsync(int orderId);
         Task<string> GenerateInvoiceNumberAsync(int branchId);
-        Task<IEnumerable<Order>> GetByDateRanceAsync(DateTime from, DateTime to, int branchId);
-        Task<IEnumerable<Order>> GetActiveTableOrderAsync(int branchId);
+        Task<IEnumerable<Order>> GetByDateRangeAsync(DateTime from, DateTime to, int branchId);
+        Task<IEnumerable<Order>> GetActiveTableOrdersAsync(int branchId);
 
     }
 }

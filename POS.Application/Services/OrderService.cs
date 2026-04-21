@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using POS.Application.DTOs;
 using POS.Application.Interfaces;
 using POS.Application.ViewModels;
@@ -40,7 +41,7 @@ namespace POS.Application.Services
                 InvoiceNumber = invoiceNumber,
                 OrderType = dto.OrderType,
                 BranchId = branchId,
-                TableId = dto.TableId,
+                TableId = (int)dto.TableId,
                 CustomerName = dto.CustomerName,
                 CustomerPhone = dto.CustomerPhone,
                 CashierId = cashierId,
@@ -74,7 +75,7 @@ namespace POS.Application.Services
                     TaxAmount = lineTax,
                     DiscountAmount = 0,
                     LineTotal = lineSubTotal + lineTax,
-                    Notes = item.Notes,
+                    Note = item.Notes,
                 });
 
                 subTotal += lineSubTotal;
