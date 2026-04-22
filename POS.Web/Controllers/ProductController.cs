@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace POS.Web.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
@@ -36,7 +36,7 @@ namespace POS.Web.Controllers
 
         // ── Create ────────────────────────────────────────────────────────────
         [HttpGet]
-        [Authorize(Roles = "Admin,Manager")]
+        //[Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create()
         {
             ViewBag.Categories = await _productService.GetCategoriesAsync();

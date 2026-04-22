@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using POS.Application.Interfaces;
@@ -22,7 +23,12 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     ));
 
 // 2. AutoMapper ✅
-builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
+// Program.cs
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+});
 
 // All service registrations inside builder.Services
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
