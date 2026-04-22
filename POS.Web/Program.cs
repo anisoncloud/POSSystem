@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using POS.Application.Interfaces;
 using POS.Application.Mappings;
 using POS.Application.Services;
@@ -21,6 +22,8 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     builder.Configuration.GetConnectionString("PosDefaultConnection"),
     sql=>sql.MigrationsAssembly("POS.Infrastructure")
     ));
+
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDbContext>();
 
 // 2. AutoMapper ✅
 
@@ -47,10 +50,15 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(opt =>
     opt.Password.RequireDigit = true;
     opt.Password.RequiredLength = 8;
     opt.Lockout.MaxFailedAccessAttempts = 5;
+    opt.Password.RequireNonAlphanumeric = false;
+    opt.Password.RequireUppercase = false;
+    opt.Password.RequireLowercase = false;
 })
 .AddEntityFrameworkStores<AppDbContext>()
-.AddDefaultTokenProviders();
-
+.AddDefaultTokenProviders()
+.AddDefaultUI();              // ✅ This generates Login, Register, Profile UI
+// ✅ Add Razor Pages (required for Identity UI)
+builder.Services.AddRazorPages();
 builder.Services.ConfigureApplicationCookie(opt =>
 {
     opt.LoginPath = "/Account/Login";
@@ -69,6 +77,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();         // ✅ Required for Identity UI styling
 app.UseRouting();
 
 app.UseAuthorization();
@@ -79,6 +88,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
+app.MapRazorPages();          // ✅ Required for Identity UI routes
 
 app.Run();
