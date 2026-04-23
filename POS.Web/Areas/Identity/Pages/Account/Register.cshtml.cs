@@ -71,7 +71,9 @@ namespace POS.Web.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-            
+            [Required]
+            [Display(Name = "Full Name")]
+            public string FullName { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -115,7 +117,11 @@ namespace POS.Web.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
+                //var user = CreateUser();
+                var user = new AppUser
+                {
+                    FullName = Input.FullName
+                };
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
