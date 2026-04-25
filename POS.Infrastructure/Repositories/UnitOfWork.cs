@@ -20,6 +20,7 @@ namespace POS.Infrastructure.Repositories
         public IRepository<Table> Tables { get; }
         public IRepository<Payment> Payments { get; }
         public IRepository<OrderItem> OrderItems { get; }
+        public IBranchRepository Branches { get; }
 
 
 
@@ -35,6 +36,7 @@ namespace POS.Infrastructure.Repositories
             Tables = new GenericRepository<Table>(context);
             Payments = new GenericRepository<Payment>(context);
             OrderItems = new GenericRepository<OrderItem>(context);
+            Branches = new BranchRepository(context);
         }
 
         public async Task<int> CommitAsync()

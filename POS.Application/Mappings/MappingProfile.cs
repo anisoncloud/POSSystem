@@ -38,7 +38,6 @@ namespace POS.Application.Mappings
             CreateMap<Category, CategoryDto>().ReverseMap();
 
             // ── Order ─────────────────────────────────────────────────────────
-            // ── Order ─────────────────────────────────────────────────────────
             CreateMap<Order, OrderDetailViewModel>()
                 .ForMember(d => d.CashierName,
                     o => o.MapFrom(s => s.Cashier != null
