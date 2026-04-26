@@ -67,6 +67,15 @@ namespace POS.Application.Mappings
             // ── Table ─────────────────────────────────────────────────────────
             CreateMap<Table, TableDto>().ReverseMap();
 
+            //----Branch--------------------------------------------------------
+            CreateMap<Branch, BranchDto>()
+                .ForMember(b=>b.TotalUsers,
+                o=>o.Ignore())
+                .ForMember(x=>x.TotalProducts,
+                y=>y.Ignore());
+            CreateMap<CreateBranchDto, Branch>();
+            CreateMap<UpdateBranchDto, Branch>();
+
         }
     }
 }
