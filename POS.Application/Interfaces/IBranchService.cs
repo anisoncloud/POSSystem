@@ -8,7 +8,7 @@ namespace POS.Application.Interfaces
 {
     public interface IBranchService 
     {
-        Task<IEnumerable<BranchDto>> GetAllAsync();
+        Task<IEnumerable<BranchDto>> GetAllBranchAsync();
         Task<IEnumerable<BranchDto>> GetAllActiveAsync();
         Task<BranchDto> GetByIdAsync(int id);
         Task<BranchDto> CreateAsync(CreateBranchDto dto);

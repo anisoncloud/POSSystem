@@ -53,7 +53,7 @@ namespace POS.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<BranchDto>> GetAllAsync()
+        public async Task<IEnumerable<BranchDto>> GetAllBranchAsync()
         {
             var branches = await _uow.Branches.GetAllAsync();
             var dtos = _mapper.Map<IEnumerable<BranchDto>>(branches).ToList();

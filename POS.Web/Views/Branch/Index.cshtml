@@ -1,0 +1,79 @@
+﻿@model IEnumerable<POS.Application.DTOs.BranchDto>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Branches</h4>
+    <a asp-action="Create" class="btn btn-primary">+ Add Branch</a>
+</div>
+
+<div class="row g-3">
+    @foreach (var branch in Model)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm
+                @(!branch.IsActive ? "border-secondary opacity-75" : "")">
+                <div class="card-header d-flex
+                    justify-content-between align-items-center">
+                    <h6 class="mb-0 fw-semibold">@branch.Name</h6>
+                    <span class="badge
+                        @(branch.IsActive ? "bg-success" : "bg-secondary")">
+                        @(branch.IsActive ? "Active" : "Inactive")
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <small class="text-muted">Address</small>
+                        <div>@branch.Address</div>
+                    </div>
+                    <div class="mb-2">
+                        <small class="text-muted">Phone</small>
+                        <div>@branch.Phone</div>
+                    </div>
+                    <div class="mb-2">
+                        <small class="text-muted">Created</small>
+                        <div>@branch.CreatedAt.ToString("dd MMM yyyy")</div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex gap-2 flex-wrap">
+                    <a asp-action="Details"
+                       asp-route-id="@branch.Id"
+                       class="btn btn-sm btn-outline-info">Details</a>
+
+                    <a asp-action="Edit"
+                       asp-route-id="@branch.Id"
+                       class="btn btn-sm btn-outline-primary">Edit</a>
+
+                    <!-- Toggle status -->
+                    <form asp-action="ToggleStatus"
+                          asp-route-id="@branch.Id"
+                          method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit"
+                                class="btn btn-sm
+                            @(branch.IsActive
+                                                                ? "btn-outline-warning"
+                                                                : "btn-outline-success")">
+                            @(branch.IsActive ? "Deactivate" : "Activate")
+                        </button>
+                    </form>
+
+                    <!-- Delete -->
+                    <form asp-action="Delete"
+                          asp-route-id="@branch.Id"
+                          method="post" class="d-inline"
+                          onsubmit="return confirm(
+                        'Delete branch @branch.Name? This cannot be undone.')">
+                        @Html.AntiForgeryToken()
+                        <button type="submit"
+                                class="btn btn-sm btn-outline-danger">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>

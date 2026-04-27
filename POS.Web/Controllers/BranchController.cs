@@ -13,9 +13,10 @@ namespace POS.Web.Controllers
             _branchService = branchService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var branches = await _branchService.GetAllBranchAsync();
+            return View(branches);
         }
         [HttpGet]
         public IActionResult Create()
