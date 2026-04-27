@@ -25,8 +25,12 @@ namespace POS.Infrastructure.Repositories
 
         public async Task<Branch?> GetByNameAsync(string name)
         {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return null;
+            }
             return await _dbSet
-                .FirstOrDefaultAsync(b => b.Name == name);                
+                .FirstOrDefaultAsync(b => b.Name.ToLower() == name.ToLower() && !b.IsDeleted);                
         }
 
         public async Task<bool> HasProductsAsync(int branchId)

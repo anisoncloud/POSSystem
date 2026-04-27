@@ -13,8 +13,24 @@ namespace POS.Application.Services
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
+
+        public BranchService(IUnitOfWork uow, IMapper mapper)
+        {
+            _uow = uow;
+            _mapper = mapper;
+        }
+
         public async Task<BranchDto> CreateAsync(CreateBranchDto dto)
         {
+            //Null Check
+            if (dto == null)
+            {
+                throw new ArgumentNullException(nameof(dto));
+            }
+            if (string.IsNullOrWhiteSpace(dto.Name))
+            {
+                throw new ArgumentException("Branch name cannot be empty", nameof(dto.Name));
+            }
             var existing = await _uow.Branches.GetByNameAsync(dto.Name);
             if (existing !=null)
             {

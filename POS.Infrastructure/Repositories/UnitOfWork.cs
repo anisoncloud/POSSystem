@@ -23,7 +23,6 @@ namespace POS.Infrastructure.Repositories
         public IBranchRepository Branches { get; }
 
 
-
         public UnitOfWork(AppDbContext context)
         {
             _context = context;

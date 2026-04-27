@@ -20,43 +20,40 @@ namespace POS.Infrastructure.Repositories
             _dbSet=context.Set<T>();
         }
 
-        public virtual async Task DeleteAsync(int id)
-        {
-            var entity = await GetByIdAsync(id);
-            if (entity!=null)
-            {
-                entity.IsDeleted = true;
-                await UpdateAsync(entity);
-            }
-        }
-
         public async Task<bool> ExistsAsync(int id)
         {
             return await _dbSet.AnyAsync(x => x.Id == id);
         }
-
-        public virtual async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
-        {
-            return await _dbSet.Where(predicate).AsNoTracking().ToListAsync();
-        }
-
-        public virtual async Task<IEnumerable<T>> GetAllAsync()
-        {
-            return await _dbSet.AsNoTracking().ToListAsync();
-        }
-
-        public virtual async Task<T?> GetByIdAsync(int id)
-            => await _dbSet.FirstOrDefaultAsync(e => e.Id == id);
-
         public virtual async Task AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
         }
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await _dbSet.AsNoTracking().ToListAsync();
+        }
+        public virtual async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).AsNoTracking().ToListAsync();
+        }       
 
+        public virtual async Task<T?> GetByIdAsync(int id)
+        {
+            return await _dbSet.FirstOrDefaultAsync(e => e.Id == id);
+        }
         public virtual async Task UpdateAsync(T entity)
         {
             entity.UpdatedAt = DateTime.UtcNow;
             _dbSet.Update(entity);
+        }
+        public virtual async Task DeleteAsync(int id)
+        {
+            var entity = await GetByIdAsync(id);
+            if (entity != null)
+            {
+                entity.IsDeleted = true;
+                await UpdateAsync(entity);
+            }
         }
     }
 }
