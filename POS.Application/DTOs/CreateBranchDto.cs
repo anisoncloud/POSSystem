@@ -7,7 +7,7 @@ namespace POS.Application.DTOs
 {
     public class CreateBranchDto
     {
-        [Required(ErrorMessage = "Branch name is required")]
+        [Required(ErrorMessage = "You shoul have provide the Branch name")]
         [MaxLength(200, ErrorMessage = "Name cannot exceed 200 characters")]
         public string Name { get; set; } = default!;
         [Required(ErrorMessage = "Address is required")]

@@ -10,5 +10,7 @@ namespace POS.Application.DTOs
         public string Name { get; set; }
         public string? Description { get; set; }
         public int? CategoryId { get; set; }
+        public int TotalSubCategory {  get; set; }
+        public int TotalProductInCategory {  get; set; }
     }
 }

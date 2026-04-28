@@ -7,7 +7,7 @@ namespace POS.Application.DTOs
 {
     public class UpdateBranchDto
     {
-        [Required(ErrorMessage = "Branch name is required")]
+        [Required(ErrorMessage = "Update Branch name is required")]
         [MaxLength(200)]
         public string Name { get; set; } = default!;
 
