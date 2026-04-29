@@ -43,6 +43,7 @@ builder.Services.AddScoped<IBarcodeService, BarcodeService>();
 builder.Services.AddScoped<IPdfInvoiceService, PdfInvoiceService>();
 builder.Services.AddScoped<ITableService, TableService>();
 builder.Services.AddScoped<IBranchService, BranchService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddHttpContextAccessor();
 
 // ── Identity ──────────────────────────────────────────────────────────────────

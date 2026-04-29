@@ -13,7 +13,8 @@ namespace POS.Infrastructure.Repositories
         private readonly AppDbContext _context;
         public IProductRepository Products { get; }
         public IOrderRepository Orders { get; }
-        public IRepository<Category> Categories { get; }
+        //public IRepository<Category> Categories { get; }
+        public ICategoryRepository Categories { get; }
         public IRepository<Supplier> Suppliers { get; }
         public IRepository<PurchaseOrder> PurchaseOrders { get; }
         public IStockRepository StockMovements { get; }
@@ -28,7 +29,8 @@ namespace POS.Infrastructure.Repositories
             _context = context;
             Products = new ProductRepository(context);
             Orders = new OrderRepository(context);
-            Categories = new GenericRepository<Category>(context);
+            //Categories = new GenericRepository<Category>(context);
+            Categories = new CategoryRepository(context);
             Suppliers = new GenericRepository<Supplier>(context);
             PurchaseOrders = new GenericRepository<PurchaseOrder>(context);
             StockMovements = new StockRepository(context);
