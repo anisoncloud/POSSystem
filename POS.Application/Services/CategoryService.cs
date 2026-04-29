@@ -34,9 +34,11 @@ namespace POS.Application.Services
             return _mapper.Map<CategoryDto>(dto);
         }
 
-        public Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync()
+        public async Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync()
         {
-            throw new NotImplementedException();
+            var categories = await _uow.Categories.GetAllAsync();
+            var dots = _mapper.Map<IEnumerable<CategoryDto>>(categories).ToList();
+            return dots;
         }
 
         public Task<IEnumerable<CategoryDto>> GetAllSubCategoriesByIdAsync(int categoryId)

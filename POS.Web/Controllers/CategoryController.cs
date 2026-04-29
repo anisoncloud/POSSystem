@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using POS.Application.DTOs;
 using POS.Application.Interfaces;
 
 namespace POS.Web.Controllers
@@ -16,10 +17,32 @@ namespace POS.Web.Controllers
         {
             return View();
         }
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
-            //ViewBag.Categories = await 
+            ViewBag.Categories = await _categoryService.GetAllCategoriesAsync();
             return View();
+        }
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CategoryCreateDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(dto);
+            }
+            try
+            {
+                await _categoryService.CreateCategoryAsync(dto);
+                TempData["success"] = $"'{dto.Name}' Category Created Successfully";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (InvalidOperationException ex)
+            {
+
+                ModelState.AddModelError(nameof(dto.Name), ex.Message);
+                return View(dto);
+            }
+            
         }
     }
 }
