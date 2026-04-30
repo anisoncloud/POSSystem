@@ -36,6 +36,8 @@ namespace POS.Application.Mappings
 
             // ── Category ──────────────────────────────────────────────────────
             CreateMap<Category, CategoryDto>().ReverseMap();
+            CreateMap<CategoryCreateDto, Category>();
+            CreateMap<CategoryUpdateDto, Category>();
 
             // ── Order ─────────────────────────────────────────────────────────
             CreateMap<Order, OrderDetailViewModel>()

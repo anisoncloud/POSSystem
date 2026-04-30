@@ -22,8 +22,8 @@ namespace POS.Application.Services
 
         public async Task<CategoryDto> CreateCategoryAsync(CategoryCreateDto dto)
         {
-            var existing = _uow.Categories.GetByNameAsync(dto.Name);
-            if (existing!=null)
+            var existing = await _uow.Categories.GetByNameAsync(dto.Name);
+            if (existing != null)
             {
                 throw new InvalidOperationException(
                     $"A category with the name '{dto.Name}' is already exists"
@@ -31,7 +31,8 @@ namespace POS.Application.Services
             }
             var category = _mapper.Map<Category>(dto);
             await _uow.Categories.AddAsync(category);
-            return _mapper.Map<CategoryDto>(dto);
+            await _uow.CommitAsync();
+            return _mapper.Map<CategoryDto>(category);
         }
 
         public async Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync()
