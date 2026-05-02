@@ -13,10 +13,10 @@ namespace POS.Web.Controllers
             _categoryService = categoryService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-
-            return View();
+            var categories = await _categoryService.GetAllCategoriesAsync();
+            return View(categories);
         }
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -33,7 +33,14 @@ namespace POS.Web.Controllers
             }
             try
             {
-                await _categoryService.CreateCategoryAsync(dto);
+                var result = await _categoryService.CreateCategoryAsync(dto);
+                /*if (result == null)
+                {
+                    ModelState.AddModelError("Name", "Category already exists");
+                    return View(dto); // no redirect
+                }*/
+                ViewBag.Categories = await _categoryService.GetAllCategoriesAsync();
+
                 TempData["success"] = $"'{dto.Name}' Category Created Successfully";
                 return RedirectToAction(nameof(Index));
             }

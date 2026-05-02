@@ -25,9 +25,11 @@ namespace POS.Application.Services
             var existing = await _uow.Categories.GetByNameAsync(dto.Name);
             if (existing != null)
             {
-                throw new InvalidOperationException(
+                /*throw new InvalidOperationException(
                     $"A category with the name '{dto.Name}' is already exists"
-                    );
+                    );*/
+                return null;
+
             }
             var category = _mapper.Map<Category>(dto);
             await _uow.Categories.AddAsync(category);

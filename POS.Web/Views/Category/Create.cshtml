@@ -32,7 +32,8 @@
                         <!-- Categories (multi-select) -->
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Categories</label>
-                            <select name="CategoryIds" class="form-select" multiple size="4">
+                            <select name="ParentCategoryId" class="form-select">
+                                <option value="">--Select Parent Category--</option>
                                 @foreach (var cat in ViewBag.Categories
                                     as IEnumerable<POS.Application.DTOs.CategoryDto>)
                                 {
