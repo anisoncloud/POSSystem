@@ -27,30 +27,27 @@ namespace POS.Web.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryCreateDto dto)
         {
+            ViewBag.Categories = await _categoryService.GetAllCategoriesAsync();
             if (!ModelState.IsValid)
             {
                 return View(dto);
             }
             try
             {
-                var result = await _categoryService.CreateCategoryAsync(dto);
-                /*if (result == null)
-                {
-                    ModelState.AddModelError("Name", "Category already exists");
-                    return View(dto); // no redirect
-                }*/
-                ViewBag.Categories = await _categoryService.GetAllCategoriesAsync();
-
+                await _categoryService.CreateCategoryAsync(dto);                
                 TempData["success"] = $"'{dto.Name}' Category Created Successfully";
                 return RedirectToAction(nameof(Index));
             }
             catch (InvalidOperationException ex)
             {
-
                 ModelState.AddModelError(nameof(dto.Name), ex.Message);
                 return View(dto);
-            }
-            
+            }            
+        }
+        [HttpGet, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id)
+        {
+            //return View
         }
     }
 }

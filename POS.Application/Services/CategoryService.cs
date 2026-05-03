@@ -25,10 +25,12 @@ namespace POS.Application.Services
             var existing = await _uow.Categories.GetByNameAsync(dto.Name);
             if (existing != null)
             {
-                /*throw new InvalidOperationException(
+                //var categories = await _uow.Categories.GetAllAsync();
+                //var dtos = _mapper.Map<IEnumerable<CategoryDto>>(categories).ToList();
+                //return dots;
+                throw new InvalidOperationException(
                     $"A category with the name '{dto.Name}' is already exists"
-                    );*/
-                return null;
+                    );
 
             }
             var category = _mapper.Map<Category>(dto);
@@ -36,6 +38,27 @@ namespace POS.Application.Services
             await _uow.CommitAsync();
             return _mapper.Map<CategoryDto>(category);
         }
+
+        /*public async Task<ServiceResult<CategoryDto>> CreateCategoryAsync(CategoryCreateDto dto)
+        {
+            var existing = _uow.Categories.GetByNameAsync(dto.Name);
+            if (existing !=null)
+            {
+                return new ServiceResult<CategoryDto>
+                {
+                    Success = false,
+                    Message = "Category already exists"
+                };
+            }
+            var category = _mapper.Map<Category>(dto);
+            await _uow.Categories.AddAsync(category);
+            await _uow.CommitAsync();
+            return new ServiceResult<CategoryDto>
+            {
+                Success = true,
+                Message = "Category Created Successfully"
+            };
+        }*/
 
         public async Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync()
         {

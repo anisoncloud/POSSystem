@@ -17,7 +17,8 @@
                         <!-- Name -->
                         <div class="col-12">
                             <label asp-for="Name" class="form-label fw-semibold"></label>
-                            <input asp-for="Name" class="form-control"
+                            <input asp-for="Name" 
+                                   class="form-control @(ViewData.ModelState["Name"]?.Errors.Count>0?"is-invalid" : "")"                                
                                    placeholder="Enter category name">
                             <span asp-validation-for="Name" class="text-danger small"></span>
                         </div>
@@ -34,8 +35,7 @@
                             <label class="form-label fw-semibold">Categories</label>
                             <select name="ParentCategoryId" class="form-select">
                                 <option value="">--Select Parent Category--</option>
-                                @foreach (var cat in ViewBag.Categories
-                                    as IEnumerable<POS.Application.DTOs.CategoryDto>)
+                                @foreach (var cat in ViewBag.Categories as IEnumerable<POS.Application.DTOs.CategoryDto>)
                                 {
                                     <option value="@cat.Id">@cat.Name</option>
                                 }
