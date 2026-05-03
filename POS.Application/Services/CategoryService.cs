@@ -72,9 +72,11 @@ namespace POS.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<CategoryDto> GetCategoryByIdAsync(int categoryId)
+        public async Task<CategoryDto> GetCategoryByIdAsync(int categoryId)
         {
-            throw new NotImplementedException();
+            var category =  await _uow.Categories.GetByIdAsync(categoryId);
+            var dot = _mapper.Map<CategoryDto>(category);
+            return dot;
         }
 
         public Task<CategoryDto> GetCategoryByNameAsync(string name)

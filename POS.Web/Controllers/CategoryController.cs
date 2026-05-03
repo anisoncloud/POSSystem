@@ -47,7 +47,16 @@ namespace POS.Web.Controllers
         [HttpGet, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id)
         {
-            //return View
+            ViewBag.Categories = await _categoryService.GetAllCategoriesAsync();
+            var category = _categoryService.GetCategoryByIdAsync(id);
+
+            return View(category);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(CategoryUpdateDto dto)
+        {
+            return View();
         }
     }
 }
