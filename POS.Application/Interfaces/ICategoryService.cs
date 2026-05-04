@@ -7,6 +7,11 @@ namespace POS.Application.Interfaces
 {
     public interface ICategoryService
     {
+        Task<IEnumerable<CategoryDto>> GetAllAsync();
+        Task<IEnumerable<CategoryDto>> GetAllWithParentAsync();
+        Task<IEnumerable<CategoryDto>> GetTopLevelAsync();
+        Task<IEnumerable<CategoryDto>> GetSubCategoriesAsunc(int parentId);
+        Task<CategoryDto> GetByIdAsync(int id);
         Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync();
         Task<IEnumerable<CategoryDto>> GetAllSubCategoriesByIdAsync(int categoryId);
         Task<CategoryDto> GetCategoryByIdAsync(int categoryId);

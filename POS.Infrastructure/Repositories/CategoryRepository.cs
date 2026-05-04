@@ -40,6 +40,21 @@ namespace POS.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Category>> GetSubCategoriesAsync(int parentId)
+        {
+            return await _dbSet
+                .Where(c => c.ParentCategoryId == parentId && !c.IsDeleted)
+                .OrderBy(c => c.Name)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<bool> HasSubCategoriesAsync(int categoryId)
+        {
+            return await _dbSet
+                .AnyAsync(c => c.ParentCategoryId == categoryId && !c.IsDeleted);
+        }
+
         public Task<bool> HasProductAsync(int categoryId)
         {
             return _context.ProductCategories

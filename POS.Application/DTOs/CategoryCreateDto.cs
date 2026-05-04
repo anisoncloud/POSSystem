@@ -11,6 +11,7 @@ namespace POS.Application.DTOs
         [MaxLength(200, ErrorMessage ="Category Name must be within 200 Charechter")]
         public string Name { get; set; }
         public string? Description { get; set; }
+        public string? ImageUrl {  get; set; }
         public int? ParentCategoryId { get; set; }
     }
 }
