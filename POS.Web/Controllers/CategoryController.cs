@@ -44,12 +44,11 @@ namespace POS.Web.Controllers
                 return View(dto);
             }            
         }
-        [HttpGet, ValidateAntiForgeryToken]
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             ViewBag.Categories = await _categoryService.GetAllCategoriesAsync();
-            var category = _categoryService.GetCategoryByIdAsync(id);
-
+            var category = await _categoryService.GetCategoryByIdAsync(id);
             return View(category);
         }
 

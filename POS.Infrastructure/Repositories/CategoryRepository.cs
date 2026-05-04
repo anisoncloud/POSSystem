@@ -17,7 +17,27 @@ namespace POS.Infrastructure.Repositories
         public async Task<Category?> GetByNameAsync(string name)
         {
             return await _dbSet.
-                FirstOrDefaultAsync(c => c.Name.ToLower() == name.ToLower());
+                FirstOrDefaultAsync(c => 
+                c.Name.ToLower() == name.ToLower() && !c.IsDeleted);
+        }
+
+        public async Task<IEnumerable<Category>> GetAllWithParentAsync()
+        {
+            return await _dbSet
+                .Include(c => c.ParentCategory)
+                .Where(c => !c.IsDeleted)
+                .OrderBy(c => c.ParentCategoryId)
+                .ThenBy(c => c.Name)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Category>> GetTopLevelAsync()
+        {
+            return await _dbSet
+                .Where(c=>c.ParentCategoryId == null &&  !c.IsDeleted)
+                .OrderBy(c=>c.Name)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public Task<bool> HasProductAsync(int categoryId)
