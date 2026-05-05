@@ -13,5 +13,6 @@ namespace POS.Application.DTOs
         public string? Description { get; set; }
         public string? ImageUrl {  get; set; }
         public int? ParentCategoryId { get; set; }
+        public string? ParentCategory {  get; set; }
     }
 }

@@ -19,6 +19,22 @@ namespace POS.Application.Services
             _uow = uow;
             _mapper = mapper;
         }
+        private IEnumerable<CategoryDto> MapWithParentName(
+            IEnumerable<Category> categories)
+        {
+            var list = categories.ToList();
+            return list.Select(c =>
+            {
+                var dto = _mapper.Map<CategoryDto>(c);
+                dto.ParentCategoryName = c.ParentCategory?.Name;
+                return dto;
+            });
+        }
+        public async Task<IEnumerable<CategoryDto>> GetAllAsync()
+        {
+            var categories =  await _uow.Categories.GetAllAsync();
+            return;
+        }
 
         public async Task<CategoryDto> CreateCategoryAsync(CategoryCreateDto dto)
         {

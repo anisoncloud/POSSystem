@@ -35,9 +35,17 @@ namespace POS.Application.Mappings
             .ForMember(d => d.BranchId, o => o.Ignore()); // never changes on update
 
             // ── Category ──────────────────────────────────────────────────────
-            CreateMap<Category, CategoryDto>().ReverseMap();
-            CreateMap<CategoryCreateDto, Category>();
-            CreateMap<CategoryUpdateDto, Category>();
+            CreateMap<Category, CategoryDto>()
+                .ForMember(d => d.ParentCategoryName,
+                o => o.Ignore());
+            CreateMap<CategoryCreateDto, Category>()
+                .ForMember(d=>d.SubCategories, o=>o.Ignore())
+                .ForMember(d=>d.ProductCategories, o=>o.Ignore())
+                .ForMember(d=>d.ParentCategory, o=>o.Ignore());
+            CreateMap<CategoryUpdateDto, Category>()
+                .ForMember(d=>d.SubCategories, o=>o.Ignore())
+                .ForMember(d=>d.ProductCategories, o=>o.Ignore())
+                .ForMember(d=>d.ParentCategory, o=>o.Ignore());
 
             // ── Order ─────────────────────────────────────────────────────────
             CreateMap<Order, OrderDetailViewModel>()

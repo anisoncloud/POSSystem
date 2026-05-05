@@ -39,7 +39,6 @@ namespace POS.Infrastructure.Repositories
                 .AsNoTracking()
                 .ToListAsync();
         }
-
         public async Task<IEnumerable<Category>> GetSubCategoriesAsync(int parentId)
         {
             return await _dbSet
@@ -48,13 +47,11 @@ namespace POS.Infrastructure.Repositories
                 .AsNoTracking()
                 .ToListAsync();
         }
-
         public async Task<bool> HasSubCategoriesAsync(int categoryId)
         {
             return await _dbSet
                 .AnyAsync(c => c.ParentCategoryId == categoryId && !c.IsDeleted);
         }
-
         public Task<bool> HasProductAsync(int categoryId)
         {
             return _context.ProductCategories
