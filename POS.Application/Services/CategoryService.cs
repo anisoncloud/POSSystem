@@ -22,18 +22,18 @@ namespace POS.Application.Services
         private IEnumerable<CategoryDto> MapWithParentName(
             IEnumerable<Category> categories)
         {
-            var list = categories.ToList();
-            return list.Select(c =>
-            {
-                var dto = _mapper.Map<CategoryDto>(c);
-                dto.ParentCategoryName = c.ParentCategory?.Name;
-                return dto;
-            });
+            return _mapper.Map<IEnumerable<CategoryDto>>(categories); //**This comes form MappfingProfile
         }
+        //----Get All Flat List of all Categories --------------------
         public async Task<IEnumerable<CategoryDto>> GetAllAsync()
         {
             var categories =  await _uow.Categories.GetAllAsync();
-            return;
+            return MapWithParentName(categories);
+        }
+
+        public async Task<IEnumerable<CategoryDto>> GetAllWithParentAsync()
+        {
+
         }
 
         public async Task<CategoryDto> CreateCategoryAsync(CategoryCreateDto dto)

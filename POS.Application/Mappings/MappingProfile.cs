@@ -47,6 +47,11 @@ namespace POS.Application.Mappings
                 .ForMember(d=>d.ProductCategories, o=>o.Ignore())
                 .ForMember(d=>d.ParentCategory, o=>o.Ignore());
 
+            //CreateMap<Source, Destination>().ForMember( of destination parentcategoryname) .MapFrom(source ParentCategory.Name)
+            CreateMap<Category, CategoryDto>()
+                .ForMember(d => d.ParentCategoryName,
+                c => c.MapFrom(p => p.ParentCategory.Name)); //** Using in CategoryService
+
             // ── Order ─────────────────────────────────────────────────────────
             CreateMap<Order, OrderDetailViewModel>()
                 .ForMember(d => d.CashierName,
