@@ -117,9 +117,82 @@ namespace POS.Application.Services
             throw new NotImplementedException();
         }*/
 
-        public Task<CategoryDto> UpdateCategoryAsync(int id, CategoryUpdateDto dto)
+        public async Task<CategoryDto> UpdateCategoryAsync(int id, CategoryUpdateDto dto)
         {
-            throw new NotImplementedException();
+            //-- Find All categories by id---------------------------------------------------
+            var categorie = await _uow.Categories.GetByIdAsync(id);
+            if (categorie==null)
+            {
+                throw new KeyNotFoundException
+                    (
+                    $"The Item not found you requested here for id {id}"
+                    );
+            }
+            //--- Check is this inputed name already exists or not---------------------------
+            var exists = _uow.Categories.GetByNameAsync(dto.Name);
+            if (exists!=null && exists.Id !=id)
+            {
+                throw new InvalidOperationException(
+                    $"A category with the name {dto.Name} already exists.");
+            }
+
+            if (dto.ParentCategoryId.HasValue && 
+                dto.ParentCategoryId==id)
+            {                
+                throw new InvalidOperationException(
+                    $"Can not be its own parent category"
+                    );                             
+            }
+            if (dto.ParentCategoryId.HasValue)
+            {
+                var isChilOfThis = await IsDescendantAsync(dto.ParentCategoryId.Value, id);
+                if (isChilOfThis)
+                {
+                    throw new InvalidOperationException(
+                        "Can not set a Subcategory as the parent"
+                        + "This would create a Peference"
+                        );
+                }
+                var parent = await _uow.Categories.GetByIdAsync(dto.ParentCategoryId.Value);
+                if (parent !=null)
+                {
+                    throw new KeyNotFoundException(
+                        $"Parent category with Id {dto.ParentCategoryId.Value} not found"
+                        );
+                }
+
+                categorie.Name = dto.Name;
+                categorie.Description = dto.Description;
+                categorie.ImageUrl= dto.ImageUrl;
+                categorie.ParentCategoryId= dto.ParentCategoryId;
+                categorie.UpdatedAt = DateTime.UtcNow;
+
+                await _uow.Categories.UpdateAsync(categorie);
+                await _uow.CommitAsync();
+                return await GetByIdAsync(id);
+
+            }
+        }
+
+        // Recursevely check if targatedId is a decendant of ancestorId
+        // Used to preven circular parent assignment 
+
+        private async Task<bool> IsDescendantAsync(int targetdId, int ancestorId)
+        {
+            var children = await _uow.Categories.GetSubCategoriesAsync(ancestorId);
+            foreach (var child in children)
+            {
+                if (child.Id == targetdId)
+                {
+                    return true;
+                }
+                if (await IsDescendantAsync(targetdId, child.Id))
+                {
+
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

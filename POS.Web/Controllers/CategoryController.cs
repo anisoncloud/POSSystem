@@ -15,19 +15,19 @@ namespace POS.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var categories = await _categoryService.GetAllCategoriesAsync();
+            var categories = await _categoryService.GetAllWithParentAsync();
             return View(categories);
         }
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            ViewBag.Categories = await _categoryService.GetAllCategoriesAsync();
+            ViewBag.Categories = await _categoryService.GetTopLevelAsync();
             return View();
         }
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryCreateDto dto)
         {
-            ViewBag.Categories = await _categoryService.GetAllCategoriesAsync();
+            ViewBag.Categories = await _categoryService.GetTopLevelAsync();
             if (!ModelState.IsValid)
             {
                 return View(dto);
