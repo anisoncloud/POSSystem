@@ -92,44 +92,15 @@ namespace POS.Application.Services
             await _uow.CommitAsync();
             return _mapper.Map<CategoryDto>(category);
         }        
-        //--- Get All Categories ---------------
-        /*public async Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync()
-        {
-            var categories = await _uow.Categories.GetAllAsync();
-            var dots = _mapper.Map<IEnumerable<CategoryDto>>(categories).ToList();
-            return dots;
-        }
-
-        public Task<IEnumerable<CategoryDto>> GetAllSubCategoriesByIdAsync(int categoryId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<CategoryDto> GetCategoryByIdAsync(int categoryId)
-        {
-            var category =  await _uow.Categories.GetByIdAsync(categoryId);
-            var dot = _mapper.Map<CategoryDto>(category);
-            return dot;
-        }
-
-        public Task<CategoryDto> GetCategoryByNameAsync(string name)
-        {
-            throw new NotImplementedException();
-        }*/
+        
 
         public async Task<CategoryDto> UpdateCategoryAsync(int id, CategoryUpdateDto dto)
         {
             //-- Find All categories by id---------------------------------------------------
-            var categorie = await _uow.Categories.GetByIdAsync(id);
-            if (categorie==null)
-            {
-                throw new KeyNotFoundException
-                    (
-                    $"The Item not found you requested here for id {id}"
-                    );
-            }
+            var categorie = await _uow.Categories.GetByIdAsync(id)?? throw new KeyNotFoundException($"The Item not found you requested here for id {id}");
+            
             //--- Check is this inputed name already exists or not---------------------------
-            var exists = _uow.Categories.GetByNameAsync(dto.Name);
+            var exists = await _uow.Categories.GetByNameAsync(dto.Name);
             if (exists!=null && exists.Id !=id)
             {
                 throw new InvalidOperationException(
@@ -154,7 +125,7 @@ namespace POS.Application.Services
                         );
                 }
                 var parent = await _uow.Categories.GetByIdAsync(dto.ParentCategoryId.Value);
-                if (parent !=null)
+                if (parent ==null)
                 {
                     throw new KeyNotFoundException(
                         $"Parent category with Id {dto.ParentCategoryId.Value} not found"
@@ -168,10 +139,29 @@ namespace POS.Application.Services
                 categorie.UpdatedAt = DateTime.UtcNow;
 
                 await _uow.Categories.UpdateAsync(categorie);
-                await _uow.CommitAsync();
-                return await GetByIdAsync(id);
-
+                await _uow.CommitAsync();                
             }
+            return await GetByIdAsync(id);
+        }
+
+        public async Task DeleteCategoryAsync(int id)
+        {
+            var category = await _uow.Categories.GetByIdAsync(id);
+            if (category==null)
+            {
+                throw new KeyNotFoundException(
+                    $"Category with {id} not found"
+                    );
+            }
+            var hasSubCategory = await _uow.Categories.HasSubCategoriesAsync(id);
+            if (hasSubCategory)
+            {
+                throw new InvalidOperationException(
+                    $"The Categoyr with Id {id} has Sub Category. Delete or Move the Sub Category first.");
+            }
+
+            await _uow.Categories.DeleteAsync(id);
+            await _uow.CommitAsync();
         }
 
         // Recursevely check if targatedId is a decendant of ancestorId
@@ -188,7 +178,6 @@ namespace POS.Application.Services
                 }
                 if (await IsDescendantAsync(targetdId, child.Id))
                 {
-
                     return true;
                 }
             }

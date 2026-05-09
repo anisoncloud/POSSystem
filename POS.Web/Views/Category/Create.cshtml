@@ -33,14 +33,10 @@
                         <!-- Categories (multi-select) -->
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Categories</label>
-                            <select name="ParentCategoryId" class="form-select">
-                                <option value="">--Select Parent Category--</option>
-                                @foreach (var cat in ViewBag.Categories as IEnumerable<POS.Application.DTOs.CategoryDto>)
-                                {
-                                    <option value="@cat.Id">@cat.Name</option>
-                                }
-                            </select>
-                            <small class="text-muted">Hold Ctrl to select multiple</small>
+                            <select asp-for="ParentCategoryId" asp-items="ViewBag.ParentCategories" class="form-select"></select>
+                            <div class="form-text text-muted">
+                                Leave as "None" to make this a top-level category.
+                            </div>                            
                         </div>
 
                         <!-- Image -->

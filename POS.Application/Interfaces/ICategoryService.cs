@@ -11,12 +11,9 @@ namespace POS.Application.Interfaces
         Task<IEnumerable<CategoryDto>> GetAllWithParentAsync();
         Task<IEnumerable<CategoryDto>> GetTopLevelAsync();
         Task<IEnumerable<CategoryDto>> GetSubCategoriesAsync(int parentId);
-        Task<CategoryDto> GetByIdAsync(int id);
-        /*Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync();
-        Task<IEnumerable<CategoryDto>> GetAllSubCategoriesByIdAsync(int categoryId);
-        Task<CategoryDto> GetCategoryByIdAsync(int categoryId);
-        Task<CategoryDto> GetCategoryByNameAsync(string name);*/
+        Task<CategoryDto> GetByIdAsync(int id);        
         Task<CategoryDto> CreateCategoryAsync(CategoryCreateDto dto);
         Task<CategoryDto> UpdateCategoryAsync(int id, CategoryUpdateDto dto);
+        Task DeleteCategoryAsync(int id);
     }
 }

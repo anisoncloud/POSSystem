@@ -1,4 +1,4 @@
-﻿@model POS.Application.DTOs.CategoryDto
+﻿@model POS.Application.DTOs.CategoryUpdateDto
 @{
     ViewData["Title"] = "Update Category";
 }
@@ -33,14 +33,10 @@
                         <!-- Categories (multi-select) -->
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Categories</label>
-                            <select name="ParentCategoryId" class="form-select">
-                                <option value="@Model.ParentCategoryId">@Model.ParentCategoryId</option>
-                                @foreach (var cat in ViewBag.Categories as IEnumerable<POS.Application.DTOs.CategoryDto>)
-                                {
-                                    <option value="@cat.Id">@cat.Name</option>
-                                }
-                            </select>
-                            <small class="text-muted">Hold Ctrl to select multiple</small>
+                            <select asp-for="ParentCategoryId" asp-items="ViewBag.ParentCategories" class="form-select"></select>
+                            <div class="form-text text-muted">
+                                Leave as "None" to make this a top-level category.
+                            </div>
                         </div>
 
                         <!-- Image -->
@@ -53,7 +49,7 @@
 
                     <div class="d-flex gap-2 mt-4">
                         <button type="submit" class="btn btn-primary px-4">
-                            Create Category
+                            Update Category
                         </button>
                         <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
                     </div>

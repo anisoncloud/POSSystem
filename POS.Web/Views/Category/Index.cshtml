@@ -26,6 +26,7 @@
             <thead>
                 <tr>
                     <th scope="col">#</th>
+                    <th scope="col">Id</th>
                     <th scope="col">Name</th>
                     <th scope="col">Parent</th>
                     <th scope="col">Description</th>
@@ -40,10 +41,25 @@
                 {
                     <tr>
                         <th scope="row">@i</th>
+                        <td>@item.Id</td>
                         <td>@item.Name</td>
                         <td>@item.ParentCategoryId</td>
                         <td>@item.Description</td>
-                        <td><a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a></td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm py-0 px-1" style="font-size: 0.75rem;">Edit</a>
+                                <form asp-action="Delete"
+                                      asp-route-id="@item.Id"
+                                      method="post" class="d-inline"
+                                      onsubmit="return confirm(
+                                    'Delete @item.Name? ' +
+                                    'This cannot be undone.')">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit"
+                                            class="btn btn-danger btn-sm py-0 px-1" style="font-size: 0.75rem;">
+                                        Delete
+                                    </button>
+                                </form>
+                                
                     </tr>
                         i++;
                     }
