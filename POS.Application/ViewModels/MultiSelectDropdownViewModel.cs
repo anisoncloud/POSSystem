@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace POS.Application.ViewModels
 {
@@ -17,8 +18,11 @@ namespace POS.Application.ViewModels
     }
     public class SelectOption
     {
+        [JsonPropertyName("id")]
         public int Id { get; set; }
+        [JsonPropertyName("text")]
         public string Text { get; set; } = default!;
+        [JsonPropertyName("subText")]
         public string? SubText {  get; set; } //e.g. parent category name
 
     }

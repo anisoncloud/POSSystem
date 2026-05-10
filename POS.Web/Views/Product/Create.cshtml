@@ -99,17 +99,25 @@
                                         Text = c.Name ?? string.Empty,
                                         SubText = c.ParentCategoryName ?? null,
                                     }).ToList() ?? new();
+
+                                var jsonOptions = new System.Text.Json.JsonSerializerOptions
+                                {
+                                    PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+                                };
+                                // Serialize to JSON string once
+                                var optionsJson = System.Text.Json.JsonSerializer
+                                                       .Serialize(options, jsonOptions);
+
+                                var selectedJson = System.Text.Json.JsonSerializer
+                                                       .Serialize(Model.CategoryIds);
                             }
 
                             <div class="multi-select-wrapper"
                                  id="categoryMultiSelect"
                                  data-field-name="CategoryIds"
                                  data-placeholder="Click to select categories..."
-                                 data-options='@Html.Raw(
-                                    System.Text.Json.JsonSerializer.Serialize(options))'
-                                 data-selected='@Html.Raw(
-                                    System.Text.Json.JsonSerializer.Serialize(
-                                        Model.CategoryIds))'>
+                                 data-options='@Html.Raw(optionsJson)'
+                                 data-selected='@Html.Raw(selectedJson)'>
                             </div>
 
                             @if (ViewData.ModelState["CategoryIds"]?

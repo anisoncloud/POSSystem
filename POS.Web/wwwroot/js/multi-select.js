@@ -10,7 +10,7 @@ function initMultiSelect(wrapper) {
     let allOptions = [];
     try {
         const raw = wrapper.dataset.options;
-        if (raw) allOptions == JSON.parse(raw);
+        if (raw) allOptions = JSON.parse(raw);
     } catch(e) {
         console.warn(`multi-select: failed to parse options for
             field "${fieldName}"`, e);
@@ -138,13 +138,13 @@ function initMultiSelect(wrapper) {
     // ── Render dropdown options filtered by search term ───────────────────
     function renderOptions(searchTerm = '') {
         const term = searchTerm.toLowerCase().trim();
+        
 
-        const filtered = allOptions.filter(opt => {
-            if (!opt || typeof opt.text !== 'string') return false;
+        const filtered = allOptions.filter(opt => 
             opt.text.toLowerCase().includes(term) ||
                 (opt.subText && opt.subText.toLowerCase().includes(term))
-        });
-
+        );
+        
         optionList.innerHTML = '';
 
         filtered.forEach(opt => {
@@ -181,7 +181,6 @@ function initMultiSelect(wrapper) {
                 e.preventDefault();
                 toggleOption(opt.id);
             });
-
             optionList.appendChild(li);
         });
 
