@@ -1,6 +1,7 @@
 ﻿@model POS.Application.DTOs.CreateProductDto
 @{
     ViewData["Title"] = "Create Product";
+    var categories = ViewBag.Categories as IEnumerable<POS.Application.DTOs.CategoryDto>;
 }
 <div class="row justify-content-center">
     <div class="col-lg-8">
@@ -83,16 +84,42 @@
                         </div>
 
                         <!-- Categories (multi-select) -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Categories</label>
-                            <select name="CategoryIds" class="form-select" multiple size="4">
-                                @foreach (var cat in ViewBag.Categories
-                                    as IEnumerable<POS.Application.DTOs.CategoryDto>)
-                                {
-                                    <option value="@cat.Id">@cat.Name</option>
-                                }
-                            </select>
-                            <small class="text-muted">Hold Ctrl to select multiple</small>
+                        <!-- ═══ Multi-select category dropdown ═══ -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">
+                                Categories
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            @{
+                                var options = categories?
+                                    .Select(c => new POS.Application.ViewModels.SelectOption
+                                    {
+                                        Id = c.Id,
+                                        Text = c.Name ?? string.Empty,
+                                        SubText = c.ParentCategoryName ?? null,
+                                    }).ToList() ?? new();
+                            }
+
+                            <div class="multi-select-wrapper"
+                                 id="categoryMultiSelect"
+                                 data-field-name="CategoryIds"
+                                 data-placeholder="Click to select categories..."
+                                 data-options='@Html.Raw(
+                                    System.Text.Json.JsonSerializer.Serialize(options))'
+                                 data-selected='@Html.Raw(
+                                    System.Text.Json.JsonSerializer.Serialize(
+                                        Model.CategoryIds))'>
+                            </div>
+
+                            @if (ViewData.ModelState["CategoryIds"]?
+                                    .Errors.Count > 0)
+                            {
+                                <div class="text-danger small mt-1">
+                                    @ViewData.ModelState["CategoryIds"]!
+                                    .Errors[0].ErrorMessage
+                                </div>
+                            }
                         </div>
 
                         <!-- Image -->
@@ -119,4 +146,10 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script src="~/js/multi-select.js"></script>
+    <script>
+        // Initialize all multi-select wrappers on the page
+        document.querySelectorAll('.multi-select-wrapper')
+            .forEach(el => initMultiSelect(el));
+    </script>
 }

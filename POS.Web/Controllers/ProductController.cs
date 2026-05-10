@@ -10,13 +10,16 @@ namespace POS.Web.Controllers
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
         private readonly IWebHostEnvironment _env;
 
         public ProductController(
             IProductService productService,
+            ICategoryService categoryService,
             IWebHostEnvironment env)
         {
             _productService = productService;
+            _categoryService = categoryService;
             _env = env;
         }
 
@@ -39,7 +42,9 @@ namespace POS.Web.Controllers
         //[Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create()
         {
-            ViewBag.Categories = await _productService.GetCategoriesAsync();
+            // Load ALL categories with their parent names
+            // so the dropdown shows "Electronics > Mobile" style
+            ViewBag.Categories = await _categoryService.GetAllWithParentAsync();
             return View(new CreateProductDto());
         }
 
