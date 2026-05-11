@@ -96,8 +96,8 @@
                                     .Select(c => new POS.Application.ViewModels.SelectOption
                                     {
                                         Id = c.Id,
-                                        Text = c.Name ?? string.Empty,
-                                        SubText = c.ParentCategoryName ?? null,
+                                        Text = c.Name,
+                                        SubText = c.ParentCategoryName,
                                     }).ToList() ?? new();
 
                                 var jsonOptions = new System.Text.Json.JsonSerializerOptions

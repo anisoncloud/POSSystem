@@ -89,11 +89,9 @@ function initMultiSelect(wrapper) {
     // ── Render tags (selected items shown as pills) ───────────────────────
     function renderTags() {
         tagList.innerHTML = '';
-
         selectedIds.forEach(id => {
             const opt = allOptions.find(o => o.id === id);
             if (!opt) return;
-
             const tag = document.createElement('span');
             tag.className = 'ms-tag';
             tag.dataset.id = id;

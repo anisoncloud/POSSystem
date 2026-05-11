@@ -27,20 +27,23 @@ namespace POS.Application.Services
             _mapper = mapper;
         }
 
-        // ── Get by ID ─────────────────────────────────────────────────────────
+        // ── Get by ID ─────────────────────────────────────────────────────────------------------------------
         public async Task<ProductDto> GetByIdAsync(int id)
         {
+            //Get A single product
             var product = await _uow.Products.GetByIdAsync(id)
                 ?? throw new KeyNotFoundException($"Product with ID {id} not found.");
-
-            return _mapper.Map<ProductDto>(product);
+            //return _mapper.Map<ProductDto>(product);
+            return MapProductWithCategories(product); //This single product get with associated category
         }
 
-        // ── Get all for a branch ──────────────────────────────────────────────
+        // ── Get all for a branch ──────────────────────────────────────────────------------------------
         public async Task<IEnumerable<ProductDto>> GetAllAsync(int branchId)
         {
-            var products = await _uow.Products.FindAsync(p => p.BranchId == branchId && p.IsActive);
-            return _mapper.Map<IEnumerable<ProductDto>>(products);
+            var products = await _uow.Products
+                .FindAsync(p => p.BranchId == branchId && p.IsActive);
+            //return _mapper.Map<IEnumerable<ProductDto>>(products);
+            return products.Select(MapProductWithCategories).ToList();
         }
 
         // ── Paged list for Product/Index view ─────────────────────────────────
@@ -82,7 +85,6 @@ namespace POS.Application.Services
         {
             var sku = GenerateSku(dto.Name, dto.CategoryIds.FirstOrDefault());
             var barcode = _barcodeService.GenerateEan13();
-
             var product = new Product
             {
                 Name = dto.Name,
@@ -98,10 +100,8 @@ namespace POS.Application.Services
                 BranchId = branchId,
                 IsActive = true,
             };
-
             foreach (var catId in dto.CategoryIds)
                 product.ProductCategories.Add(new ProductCategory { CategoryId = catId });
-
             await _uow.Products.AddAsync(product);
             await _uow.CommitAsync();
 
@@ -113,10 +113,8 @@ namespace POS.Application.Services
                     dto.InitialStock,
                     StockMovementType.Adjustment,
                     "Initial stock");
-
                 await _uow.CommitAsync();
             }
-
             return _mapper.Map<ProductDto>(product);
         }
 
@@ -231,6 +229,24 @@ namespace POS.Application.Services
                 prefix = prefix.PadRight(3, 'X');
 
             return $"{prefix}-{categoryId:D3}-{DateTimeOffset.UtcNow.ToUnixTimeSeconds() % 100000}";
+        }
+
+        //----Map product with categories-----------------------------------------------
+        private ProductDto MapProductWithCategories(Product product)
+        {
+            //var dto = _mapper.Map<Destination>(Source);
+            var dto = _mapper.Map<ProductDto>(product);
+
+            dto.Categories = product.ProductCategories
+                .Where(pc => pc.Category != null)
+                .Select(pc => new CategoryDto
+                {
+                    Id = pc.Category.Id,
+                    Name = pc.Category.Name,
+                    ParentCategoryId = pc.Category.ParentCategoryId,
+                    ParentCategoryName = pc.Category.ParentCategory.Name
+                }).ToList();
+            return dto;
         }
     }
 }
