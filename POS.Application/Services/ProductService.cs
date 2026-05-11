@@ -83,6 +83,22 @@ namespace POS.Application.Services
         // ── Create ────────────────────────────────────────────────────────────
         public async Task<ProductDto> CreateProductAsync(CreateProductDto dto, int branchId)
         {
+            // Validate at least one category selected
+            if (dto.CategoryIds == null || !dto.CategoryIds.Any())
+            {
+                throw new InvalidOperationException(
+                    $"At least once category must be selected");
+            }
+            // Validate all category IDs exist
+            foreach (var catId in dto.CategoryIds)
+            {
+                var exists = await _uow.Categories.ExistsAsync(catId);
+                if (!exists)
+                {
+                    throw new KeyNotFoundException($"Category with the {catId} Not Found");
+                }
+            }
+
             var sku = GenerateSku(dto.Name, dto.CategoryIds.FirstOrDefault());
             var barcode = _barcodeService.GenerateEan13();
             var product = new Product
@@ -100,8 +116,12 @@ namespace POS.Application.Services
                 BranchId = branchId,
                 IsActive = true,
             };
-            foreach (var catId in dto.CategoryIds)
-                product.ProductCategories.Add(new ProductCategory { CategoryId = catId });
+            foreach (var catId in dto.CategoryIds.Distinct())
+                product.ProductCategories
+                    .Add(new ProductCategory 
+                    { 
+                        CategoryId = catId 
+                    });
             await _uow.Products.AddAsync(product);
             await _uow.CommitAsync();
 
@@ -115,7 +135,7 @@ namespace POS.Application.Services
                     "Initial stock");
                 await _uow.CommitAsync();
             }
-            return _mapper.Map<ProductDto>(product);
+            return MapProductWithCategories(product);
         }
 
         // ── Update ────────────────────────────────────────────────────────────
