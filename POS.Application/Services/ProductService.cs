@@ -115,6 +115,7 @@ namespace POS.Application.Services
                 UnitType = dto.UnitType,
                 BranchId = branchId,
                 IsActive = true,
+                ImageUrl = dto.ImageUrl
             };
             foreach (var catId in dto.CategoryIds.Distinct())
                 product.ProductCategories

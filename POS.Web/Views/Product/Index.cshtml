@@ -47,6 +47,7 @@
         <thead class="table-light">
             <tr>
                 <th>Product</th>
+                <th>Img</th>
                 <th>SKU</th>
                 <th>Barcode</th>
                 <th>Sale Price</th>
@@ -63,6 +64,7 @@
                         <div class="fw-semibold">@p.Name</div>
                         <small class="text-muted">@p.UnitType</small>
                     </td>
+                    <td><img class="img-fluid" style="width:40px;" src="@Url.Content(p.ImageUrl)" alt="@p.Name" /></td>
                     <td><code>@p.SKU</code></td>
                     <td><code>@p.Barcode</code></td>
                     <td class="fw-bold">৳@p.SalePrice.ToString("N2")</td>
@@ -81,20 +83,20 @@
                         </span>
                     </td>
                     <td>
-                        <div class="btn-group btn-group-sm">
+                        <div class="btn-group btn-group-sm py-0 px-0">
                             <a asp-action="Edit"
                                asp-route-id="@p.Id"
-                               class="btn btn-outline-primary">Edit</a>
+                               class="btn btn-outline-primary btn-sm">Edit</a>
                             <a asp-action="BarcodeLabel"
                                asp-route-id="@p.Id"
-                               class="btn btn-outline-secondary">Barcode</a>
+                               class="btn btn-outline-secondary btn-sm">Barcode</a>
                             <form asp-action="Delete"
                                   asp-route-id="@p.Id"
                                   method="post" class="d-inline"
                                   onsubmit="return confirm('Delete this product?')">
                                 @Html.AntiForgeryToken()
                                 <button type="submit"
-                                        class="btn btn-outline-danger">
+                                        class="btn btn-outline-danger btn-sm">
                                     Delete
                                 </button>
                             </form>

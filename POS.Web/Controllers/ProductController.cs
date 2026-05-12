@@ -87,9 +87,9 @@ namespace POS.Web.Controllers
             }
             
 
-            await _productService.CreateProductAsync(dto, BranchId);
+            /*await _productService.CreateProductAsync(dto, BranchId);
             TempData["Success"] = "Product created successfully.";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index));*/
         }
 
         // ── Edit ──────────────────────────────────────────────────────────────
