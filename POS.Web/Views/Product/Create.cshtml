@@ -34,7 +34,7 @@
                         <div class="col-md-4">
                             <label asp-for="PurchasePrice" class="form-label fw-semibold"></label>
                             <div class="input-group">
-                                <span class="input-group-text">$</span>
+                                <span class="input-group-text">@Model.CurrencySymbol</span>
                                 <input asp-for="PurchasePrice" class="form-control"
                                        type="number" step="0.01" min="0">
                             </div>
@@ -44,7 +44,7 @@
                         <div class="col-md-4">
                             <label asp-for="SalePrice" class="form-label fw-semibold"></label>
                             <div class="input-group">
-                                <span class="input-group-text">$</span>
+                                <span class="input-group-text">@Model.CurrencySymbol</span>
                                 <input asp-for="SalePrice" class="form-control"
                                        type="number" step="0.01" min="0">
                             </div>
@@ -90,7 +90,6 @@
                                 Categories
                                 <span class="text-danger">*</span>
                             </label>
-
                             @{
                                 var options = categories?
                                     .Select(c => new POS.Application.ViewModels.SelectOption

@@ -23,6 +23,7 @@ namespace POS.Application.DTOs
         public int BranchId { get; set; }
         public bool IsLowStock => StockQuantity <= LowStockThreshold;
         public List<CategoryDto> Categories { get; set; } = new();
+        public string CurrencySymbol { get; set; } = "৳";
 
     }
 }

@@ -1,0 +1,140 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<!-- POS.Web/Views/Product/Index.cshtml -->
+@model POS.Application.ViewModels.ProductListViewModel
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Products</h4>
+    <a asp-action="Create" class="btn btn-primary">+ Add Product</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-5">
+        <input type="text" name="search" value="@Model.Search"
+               class="form-control" placeholder="Search by name, SKU or barcode...">
+    </div>
+    <div class="col-md-4">
+        <select name="categoryId" class="form-select">
+            <option value="">All Categories</option>
+            @foreach (var c in ViewBag.Categories as IEnumerable<POS.Application.DTOs.CategoryDto>)
+            {
+                <option value="@c.Id"
+                        selected="@(Model.CategoryId == c.Id)">@c.Name</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-outline-secondary w-100">Filter</button>
+    </div>
+</form>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Product</th>
+                <th>SKU</th>
+                <th>Barcode</th>
+                <th>Sale Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model.Products)
+            {
+                <tr class="@(p.IsLowStock ? "table-warning" : "")">
+                    <td>
+                        <div class="fw-semibold">@p.Name</div>
+                        <small class="text-muted">@p.UnitType</small>
+                    </td>
+                    <td><code>@p.SKU</code></td>
+                    <td><code>@p.Barcode</code></td>
+                    <td class="fw-bold">৳@p.SalePrice.ToString("N2")</td>
+                    <td>
+                        <span class="badge @(p.IsLowStock ? "bg-danger" : "bg-success")">
+                            @p.StockQuantity
+                        </span>
+                        @if (p.IsLowStock)
+                        {
+                            <small class="text-danger ms-1">Low stock!</small>
+                        }
+                    </td>
+                    <td>
+                        <span class="badge @(p.IsActive ? "bg-success" : "bg-secondary")">
+                            @(p.IsActive ? "Active" : "Inactive")
+                        </span>
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a asp-action="Edit"
+                               asp-route-id="@p.Id"
+                               class="btn btn-outline-primary">Edit</a>
+                            <a asp-action="BarcodeLabel"
+                               asp-route-id="@p.Id"
+                               class="btn btn-outline-secondary">Barcode</a>
+                            <form asp-action="Delete"
+                                  asp-route-id="@p.Id"
+                                  method="post" class="d-inline"
+                                  onsubmit="return confirm('Delete this product?')">
+                                @Html.AntiForgeryToken()
+                                <button type="submit"
+                                        class="btn btn-outline-danger">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination -->
+<nav>
+    <ul class="pagination justify-content-center">
+        @if (Model.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(Model.CurrentPage - 1)"
+                   asp-route-search="@Model.Search">Previous</a>
+            </li>
+        }
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@i"
+                   asp-route-search="@Model.Search">@i</a>
+            </li>
+        }
+        @if (Model.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(Model.CurrentPage + 1)"
+                   asp-route-search="@Model.Search">Next</a>
+            </li>
+        }
+    </ul>
+</nav>

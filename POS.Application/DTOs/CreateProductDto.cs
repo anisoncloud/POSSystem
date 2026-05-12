@@ -33,6 +33,7 @@ namespace POS.Application.DTOs
         public List<int> CategoryIds { get; set; } = new();
         public IFormFile? Image {  get; set; }
         public string? ImageUrl { get; set; }
+        public string CurrencySymbol { get; set; } = "৳";
 
     }
 }
