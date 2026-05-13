@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using POS.Application.DTOs;
 using POS.Application.Interfaces;
 using POS.Application.ViewModels;
 using POS.Domain.Entities;
@@ -40,10 +41,10 @@ namespace POS.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProduct(string query)
         {
-            Product? product = null;
-            if (query.Length >= 8 && query.All(char.IsDigit))
+            ProductDto? product = null;
+            /*if (query.Length >= 8 && query.All(char.IsDigit))
                 product = await _productService.GetByBarcodeAsync(query);
-            else
+            else*/
                 product = (await _productService.SearchAsync(query, _branchId)).FirstOrDefault();
 
             if (product == null)
