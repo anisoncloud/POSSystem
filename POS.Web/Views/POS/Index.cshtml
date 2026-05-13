@@ -1,0 +1,378 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<!-- POS.Web/Views/POS/Index.cshtml -->
+@model POS.Application.ViewModels.PosScreenViewModel
+@{
+    ViewData["Title"] = "Point of Sale";
+    Layout = "_PosLayout";
+}
+
+<div class="pos-wrapper d-flex" style="height:100vh;overflow:hidden">
+
+    <!-- ═══ LEFT: Product Panel ════════════════════════════════════════════ -->
+    <div class="pos-products d-flex flex-column" style="width:60%;border-right:1px solid #dee2e6">
+
+        <!-- Search / Barcode input -->
+        <div class="p-3 border-bottom bg-light">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text"><i class="bi bi-upc-scan"></i></span>
+                <input type="text" id="barcodeInput" class="form-control"
+                       placeholder="Scan barcode or type product name..."
+                       autocomplete="off" autofocus>
+                <button class="btn btn-primary" onclick="searchProduct()">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+            <!-- Order type selector -->
+            <div class="mt-2 d-flex gap-2">
+                <div class="btn-group">
+                    <input type="radio" class="btn-check" name="orderType" id="retail" value="0" checked>
+                    <label class="btn btn-outline-secondary" for="retail">
+                        <i class="bi bi-shop"></i> Retail
+                    </label>
+                    <input type="radio" class="btn-check" name="orderType" id="restaurant" value="1">
+                    <label class="btn btn-outline-secondary" for="restaurant">
+                        <i class="bi bi-cup-hot"></i> Restaurant
+                    </label>
+                </div>
+                <!-- Table selector (shown for restaurant) -->
+                <select id="tableSelect" class="form-select d-none" style="max-width:160px">
+                    <option value="">Select Table</option>
+                    @foreach (var t in Model.Tables)
+                    {
+                        <option value="@t.Id">Table @t.TableNumber (@t.Capacity pax)</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <!-- Category filter pills -->
+        <div class="px-3 py-2 d-flex gap-2 flex-wrap border-bottom bg-white" id="categoryFilter">
+            <button class="btn btn-sm btn-primary active" onclick="filterCategory(null, this)">All</button>
+            @foreach (var cat in Model.Categories)
+            {
+                <button class="btn btn-sm btn-outline-secondary"
+                        onclick="filterCategory(@cat.Id, this)">
+                    @cat.Name
+                </button>
+            }
+        </div>
+
+        <!-- Product grid -->
+        <div id="productGrid" class="flex-grow-1 overflow-auto p-3">
+            <div class="row g-2" id="productCards">
+                <!-- Loaded via AJAX -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ RIGHT: Cart Panel ═══════════════════════════════════════════════ -->
+    <div class="pos-cart d-flex flex-column" style="width:40%;background:#f8f9fa">
+
+        <div class="px-3 py-2 border-bottom bg-white d-flex align-items-center justify-content-between">
+            <h5 class="mb-0"><i class="bi bi-cart3"></i> Cart</h5>
+            <button class="btn btn-sm btn-outline-danger" onclick="clearCart()">
+                <i class="bi bi-trash"></i> Clear
+            </button>
+        </div>
+
+        <!-- Cart items -->
+        <div id="cartItems" class="flex-grow-1 overflow-auto px-3 py-2">
+            <p class="text-muted text-center mt-5" id="emptyCartMsg">
+                <i class="bi bi-cart-x" style="font-size:2rem"></i><br>Cart is empty
+            </p>
+        </div>
+
+        <!-- Summary -->
+        <div class="cart-summary p-3 bg-white border-top">
+            <div class="d-flex justify-content-between mb-1">
+                <span>Subtotal</span><span id="cartSubtotal">৳0.00</span>
+            </div>
+            <!-- Discount row -->
+            <div class="d-flex gap-2 mb-1">
+                <select id="discountType" class="form-select form-select-sm" style="max-width:120px"
+                        onchange="recalculate()">
+                    <option value="0">No discount</option>
+                    <option value="1">Fixed ৳</option>
+                    <option value="2">Percent %</option>
+                </select>
+                <input type="number" id="discountValue" class="form-control form-control-sm"
+                       placeholder="0" oninput="recalculate()">
+                <span class="text-danger small align-self-center" id="discountDisplay">-৳0.00</span>
+            </div>
+            <div class="d-flex justify-content-between mb-1">
+                <span>Tax / VAT</span><span id="cartTax">৳0.00</span>
+            </div>
+            <div class="d-flex justify-content-between fw-bold fs-5 border-top pt-2">
+                <span>Total</span><span id="cartTotal" class="text-success">৳0.00</span>
+            </div>
+
+            <!-- Customer info -->
+            <div class="mt-2 row g-1">
+                <div class="col-6">
+                    <input type="text" id="customerName" class="form-control form-control-sm"
+                           placeholder="Customer name">
+                </div>
+                <div class="col-6">
+                    <input type="text" id="customerPhone" class="form-control form-control-sm"
+                           placeholder="Phone">
+                </div>
+            </div>
+
+            <!-- Payment methods -->
+            <div class="mt-2">
+                <label class="form-label small fw-bold">Payment</label>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-success btn-sm flex-grow-1 payment-btn active"
+                            data-method="0" onclick="selectPayment(0,this)">
+                        <i class="bi bi-cash"></i> Cash
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm flex-grow-1 payment-btn"
+                            data-method="1" onclick="selectPayment(1,this)">
+                        <i class="bi bi-credit-card"></i> Card
+                    </button>
+                    <button class="btn btn-outline-info btn-sm flex-grow-1 payment-btn"
+                            data-method="2" onclick="selectPayment(2,this)">
+                        <i class="bi bi-phone"></i> Mobile
+                    </button>
+                </div>
+                <div class="mt-1 input-group input-group-sm" id="paymentRefRow" style="display:none!important">
+                    <span class="input-group-text">Ref#</span>
+                    <input type="text" id="paymentRef" class="form-control" placeholder="Transaction reference">
+                </div>
+            </div>
+
+            <!-- Checkout button -->
+            <button class="btn btn-success w-100 mt-3 btn-lg fw-bold" onclick="checkout()"
+                    id="checkoutBtn" disabled>
+                <i class="bi bi-check-circle"></i> Checkout — <span id="checkoutTotal">৳0.00</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jsbarcode/JsBarcode.all.min.js"></script>
+    <script>
+        // ────────────────────────────────────────────────────────────────────────────
+        // POS Cart Engine
+        // ────────────────────────────────────────────────────────────────────────────
+        let cart = [];
+        let selectedPaymentMethod = 0;
+        let selectedPaymentRef = '';
+
+        // Barcode scanner: fires on Enter key (USB scanner ends with \n)
+        document.getElementById('barcodeInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); searchProduct(); }
+        });
+
+        // Order type toggle
+        document.querySelectorAll('input[name="orderType"]').forEach(r => {
+        r.addEventListener('change', () => {
+        const isRestaurant = r.value === '1';
+        document.getElementById('tableSelect').classList.toggle('d-none', !isRestaurant);
+        loadProductGrid(null);
+        });
+        });
+
+        async function searchProduct() {
+        const query = document.getElementById('barcodeInput').value.trim();
+        if (!query) return;
+        const res = await fetch(`/POS/GetProduct?query=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        if (data.success) addToCart(data.product);
+        else showToast(data.message, 'danger');
+        document.getElementById('barcodeInput').value = '';
+        }
+
+        function addToCart(product) {
+        const existing = cart.find(i => i.id === product.id);
+        if (existing) {
+        if (existing.qty >= product.stock) {
+        showToast('Insufficient stock', 'warning'); return;
+        }
+        existing.qty++;
+        } else {
+        cart.push({ ...product, qty: 1 });
+        }
+        renderCart();
+        }
+
+        function updateQty(productId, delta) {
+        const item = cart.find(i => i.id === productId);
+        if (!item) return;
+        item.qty += delta;
+        if (item.qty <= 0) removeFromCart(productId);
+        else renderCart();
+        }
+
+        function removeFromCart(productId) {
+        cart = cart.filter(i => i.id !== productId);
+        renderCart();
+        }
+
+        function clearCart() {
+        cart = [];
+        renderCart();
+        }
+
+        function renderCart() {
+        const container = document.getElementById('cartItems');
+        const emptyMsg = document.getElementById('emptyCartMsg');
+
+        if (cart.length === 0) {
+        container.innerHTML = '';
+        emptyMsg.style.display = 'block';
+        document.getElementById('checkoutBtn').disabled = true;
+        updateTotals(0, 0, 0);
+        return;
+        }
+
+        emptyMsg.style.display = 'none';
+        document.getElementById('checkoutBtn').disabled = false;
+
+        container.innerHTML = cart.map(item => `
+        <div class="card mb-2 shadow-sm border-0">
+        <div class="card-body p-2">
+        <div class="d-flex justify-content-between align-items-start">
+        <div class="flex-grow-1">
+        <div class="fw-semibold small">${item.name}</div>
+        <div class="text-muted x-small">৳${item.price.toFixed(2)} × ${item.qty}</div>
+        </div>
+        <div class="d-flex align-items-center gap-1">
+        <button class="btn btn-sm btn-outline-secondary px-2 py-0"
+        onclick="updateQty(${item.id},-1)">−</button>
+        <span class="fw-bold px-1">${item.qty}</span>
+        <button class="btn btn-sm btn-outline-secondary px-2 py-0"
+        onclick="updateQty(${item.id},1)">+</button>
+        <button class="btn btn-sm btn-outline-danger px-2 py-0 ms-1"
+        onclick="removeFromCart(${item.id})">×</button>
+        </div>
+        </div>
+        <div class="text-end fw-bold text-success small mt-1">
+        ৳${(item.price * item.qty).toFixed(2)}
+        </div>
+        </div>
+        </div>`).join('');
+
+        recalculate();
+        }
+
+        function recalculate() {
+        const subTotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+        const tax = cart.reduce((s, i) => s + i.price * i.qty * (i.taxRate || 0), 0);
+        const discountType = parseInt(document.getElementById('discountType').value);
+        const discountVal = parseFloat(document.getElementById('discountValue').value) || 0;
+
+        let discount = 0;
+        if (discountType === 1) discount = Math.min(discountVal, subTotal);
+        else if (discountType === 2) discount = subTotal * discountVal / 100;
+
+        updateTotals(subTotal, tax, discount);
+        }
+
+        function updateTotals(sub, tax, discount) {
+        const total = sub + tax - discount;
+        document.getElementById('cartSubtotal').textContent = '৳' + sub.toFixed(2);
+        document.getElementById('cartTax').textContent = '৳' + tax.toFixed(2);
+        document.getElementById('discountDisplay').textContent = '-৳' + discount.toFixed(2);
+        document.getElementById('cartTotal').textContent = '৳' + total.toFixed(2);
+        document.getElementById('checkoutTotal').textContent = '৳' + total.toFixed(2);
+        }
+
+        function selectPayment(method, btn) {
+        selectedPaymentMethod = method;
+        document.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const showRef = method === 1 || method === 2;
+        document.getElementById('paymentRefRow').style.setProperty('display',
+        showRef ? 'flex' : 'none', 'important');
+        }
+
+        async function checkout() {
+        if (cart.length === 0) return;
+
+        const orderType = parseInt(document.querySelector('input[name="orderType"]:checked').value);
+        const tableId = orderType === 1
+        ? (document.getElementById('tableSelect').value || null)
+        : null;
+
+        const discountType = parseInt(document.getElementById('discountType').value);
+        const discountValue = parseFloat(document.getElementById('discountValue').value) || 0;
+
+        const payload = {
+        orderType,
+        tableId: tableId ? parseInt(tableId) : null,
+        customerName: document.getElementById('customerName').value,
+        customerPhone: document.getElementById('customerPhone').value,
+        discountType,
+        discountValue,
+        items: cart.map(i => ({ productId: i.id, quantity: i.qty, notes: '' })),
+        payments: [{
+        method: selectedPaymentMethod,
+        amount: parseFloat(document.getElementById('cartTotal').textContent.replace('৳','')),
+        reference: document.getElementById('paymentRef')?.value || ''
+        }]
+        };
+
+        const btn = document.getElementById('checkoutBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+
+        try {
+        const res = await fetch('/POS/Checkout', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        'RequestVerificationToken': document.querySelector('[name=__RequestVerificationToken]').value
+        },
+        body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+        showToast(`✓ Order ${data.invoiceNumber} completed!`, 'success');
+        clearCart();
+        window.open(`/POS/Invoice/${data.orderId}`, '_blank');
+        } else {
+        showToast(data.message, 'danger');
+        }
+        } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-check-circle"></i> Checkout';
+        }
+        }
+
+        function showToast(msg, type = 'info') {
+        const t = document.createElement('div');
+        t.className = `toast align-items-center text-bg-${type} border-0 show position-fixed top-0 end-0 m-3`;
+        t.style.zIndex = 9999;
+        t.innerHTML = `<div class="d-flex"><div class="toast-body">${msg}</div>
+        <button class="btn-close btn-close-white me-2 m-auto" onclick="this.parentElement.parentElement.remove()"></button></div>`;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3500);
+        }
+
+        // Load product grid
+        async function loadProductGrid(categoryId) {
+        const url = `/POS/ProductGrid?categoryId=${categoryId ?? ''}&branchId=${window.branchId}`;
+        const res = await fetch(url);
+        document.getElementById('productCards').innerHTML = await res.text();
+        }
+
+        function filterCategory(catId, btn) {
+        document.querySelectorAll('#categoryFilter button').forEach(b => {
+        b.classList.remove('active', 'btn-primary');
+        b.classList.add('btn-outline-secondary');
+        });
+        btn.classList.add('active', 'btn-primary');
+        btn.classList.remove('btn-outline-secondary');
+        loadProductGrid(catId);
+        }
+
+        // Init
+        loadProductGrid(null);
+    </script>
+}
