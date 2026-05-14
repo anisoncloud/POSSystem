@@ -195,6 +195,15 @@ namespace POS.Application.Services
             await _uow.Products.UpdateAsync(product);
             await _uow.CommitAsync();
         }
+        public async Task<ProductDto?> GetByBarcodeAsDtoAsync(string barcode)
+        {
+            var product = await _uow.Products.GetByBarcodeAsync(barcode);
+            if (product == null)
+            {
+                return null;
+            }
+            return MapProductWithCategories(product);
+        }
 
         // ── Search ────────────────────────────────────────────────────────────
         public async Task<IEnumerable<ProductDto>> SearchAsync(string term, int branchId)
@@ -210,6 +219,17 @@ namespace POS.Application.Services
             return _mapper.Map<IEnumerable<CategoryDto>>(categories);
         }
 
+        // POS.Application/Services/ProductService.cs
+        public async Task<IEnumerable<ProductDto>> GetProductsByCategoryAsync(
+            int categoryId, int branchId)
+        {
+            var products = await _uow.Products
+                .GetByCategoryAsync(categoryId);
+
+            return products
+                .Where(p => p.BranchId == branchId && p.IsActive)
+                .Select(MapProductWithCategories);
+        }
         // ── Low stock alerts ──────────────────────────────────────────────────
         public async Task<IEnumerable<ProductDto>> GetLowStockAlertsAsync(int branchId)
         {

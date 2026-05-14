@@ -38,17 +38,54 @@ namespace POS.Web.Controllers
             return View(vm);
         }
 
+        // ── AJAX: scan barcode or search product ──────────────────────────
         [HttpGet]
         public async Task<IActionResult> GetProduct(string query)
         {
+            if (string.IsNullOrWhiteSpace(query))
+                return Json(new
+                {
+                    success = false,
+                    message = "Please enter a product name or barcode."
+                });
+
             ProductDto? product = null;
-            /*if (query.Length >= 8 && query.All(char.IsDigit))
-                product = await _productService.GetByBarcodeAsync(query);
-            else*/
-                product = (await _productService.SearchAsync(query, _branchId)).FirstOrDefault();
+
+            // Barcode scan: 8+ digit string from USB scanner
+            if (query.Length >= 8 && query.All(char.IsDigit))
+            {
+                product = await _productService
+                    .GetByBarcodeAsDtoAsync(query);
+            }
+            else
+            {
+                // Text search: name, SKU or partial barcode
+                var results = await _productService
+                    .SearchAsync(query, _branchId);
+
+                product = results.FirstOrDefault();
+            }
 
             if (product == null)
-                return Json(new { success = false, message = "Product not found" });
+                return Json(new
+                {
+                    success = false,
+                    message = $"No product found for '{query}'."
+                });
+
+            if (!product.IsActive)
+                return Json(new
+                {
+                    success = false,
+                    message = $"'{product.Name}' is inactive."
+                });
+
+            if (product.StockQuantity <= 0)
+                return Json(new
+                {
+                    success = false,
+                    message = $"'{product.Name}' is out of stock."
+                });
 
             return Json(new
             {
@@ -59,11 +96,27 @@ namespace POS.Web.Controllers
                     name = product.Name,
                     price = product.SalePrice,
                     barcode = product.Barcode,
+                    sku = product.SKU,
                     stock = product.StockQuantity,
                     unit = product.UnitType.ToString(),
-                    taxRate = product.TaxRate
+                    taxRate = product.TaxRate,
+                    imageUrl = product.ImageUrl ?? string.Empty,
                 }
             });
+        }
+
+        // ── AJAX: product grid for category filter ────────────────────────
+        [HttpGet]
+        public async Task<IActionResult> ProductGrid(
+            int? categoryId)
+        {
+            IEnumerable<ProductDto> products;
+            if (categoryId.HasValue)
+                products = await _productService
+                    .GetProductsByCategoryAsync(categoryId.Value, _branchId);
+            else
+                products = await _productService.GetAllAsync(_branchId);
+            return PartialView("_ProductGrid", products);
         }
     }
 }

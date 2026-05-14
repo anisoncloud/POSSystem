@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="~/css/PosStyleSheet.css">
     <!-- POS specific styles -->
 
+
     @await RenderSectionAsync("Styles", required: false)
 </head>
 
@@ -253,11 +254,11 @@
     </script>
 
     <!-- SignalR for Kitchen display -->
-    <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/signalr.min.js"></script>
+    @* <script src="~/lib/signalr/dist/browser/signalr.min.js"></script> *@
 
     <!-- JsBarcode for barcode rendering -->
-    <script src="~/lib/jsbarcode/JsBarcode.all.min.js"></script>
-
+    <script src="~/js/JsBarcode.all.min.js"></script>
     <!-- Live clock -->
     <script>
         (function () {

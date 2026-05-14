@@ -23,14 +23,17 @@ namespace POS.Application.Interfaces
         Task<Product?> GetBySkuAsync(string sku);
         Task RegenerateBarcode(int id);
 
+
         // ── Search ────────────────────────────────────────────────────────────
         Task<IEnumerable<ProductDto>> SearchAsync(string term, int branchId);
 
         // ── Categories ────────────────────────────────────────────────────────
         Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
+        Task<IEnumerable<ProductDto>> GetProductsByCategoryAsync(int categoryId, int branchId);
 
         // ── Stock ─────────────────────────────────────────────────────────────
         Task<IEnumerable<ProductDto>> GetLowStockAlertsAsync(int branchId);
         Task AdjustStockAsync(int productId, int qty, StockMovementType type, string? reference);
+        Task<ProductDto?> GetByBarcodeAsDtoAsync(string query);
     }
 }
