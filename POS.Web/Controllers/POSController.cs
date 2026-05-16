@@ -107,8 +107,7 @@ namespace POS.Web.Controllers
 
         // ── AJAX: product grid for category filter ────────────────────────
         [HttpGet]
-        public async Task<IActionResult> ProductGrid(
-            int? categoryId)
+        public async Task<IActionResult> ProductGrid(int? categoryId)
         {
             IEnumerable<ProductDto> products;
             if (categoryId.HasValue)
@@ -117,6 +116,37 @@ namespace POS.Web.Controllers
             else
                 products = await _productService.GetAllAsync(_branchId);
             return PartialView("_ProductGrid", products);
+        }
+
+
+        //--- Ajax Checkout
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Checkout([FromBody] CreateOrderDto dto) 
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                var order = await _orderService.CreateOrderAsync(dto, _branchId);
+                return Ok(new
+                {
+                    success = true,
+                    orderId = order.Id,
+                    invoiceNumber = order.InvoiceNumber,
+                    total = order.TotalAmount
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
     }
 }

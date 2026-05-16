@@ -120,7 +120,8 @@ namespace POS.Web.Areas.Identity.Pages.Account
                 //var user = CreateUser();
                 var user = new AppUser
                 {
-                    FullName = Input.FullName
+                    FullName = Input.FullName,
+                    BranchId = 1
                 };
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);

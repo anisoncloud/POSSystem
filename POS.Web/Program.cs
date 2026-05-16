@@ -23,7 +23,8 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     sql=>sql.MigrationsAssembly("POS.Infrastructure")
     ));
 
-//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDbContext>();
+/*builder.Services.AddDefaultIdentity<AppUser>(options => 
+options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDbContext>();*/
 
 // 2. AutoMapper ✅
 

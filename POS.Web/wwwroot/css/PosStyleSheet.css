@@ -234,3 +234,6 @@ html, body {
         overflow: visible;
     }
 }
+.flex-grow-1 {
+    flex-grow: 0 !important;
+}

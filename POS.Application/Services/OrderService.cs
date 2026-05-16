@@ -33,7 +33,6 @@ namespace POS.Application.Services
         {
             var cashierId = _httpContext.HttpContext!
                 .User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-
             var invoiceNumber = await _uow.Orders.GenerateInvoiceNumberAsync(branchId);
 
             var order = new Order
