@@ -10,7 +10,7 @@ namespace POS.Application.Interfaces
 {
     public interface IOrderService
     {
-        Task<Order> CreateOrderAsync(CreateOrderDto dto, int branchId);
+        Task<OrderDto> CreateOrderAsync(CreateOrderDto dto, int branchId);
         Task<OrderDetailViewModel?> GetOrderWithDetailsAsync(int orderId);
         Task<IEnumerable<OrderDetailViewModel>> GetOrdersByDateAsync(DateTime from, DateTime to, int branchId);
         Task UpdateOrderStatusAsync(int orderId, OrderStatus status);

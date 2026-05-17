@@ -118,7 +118,8 @@ namespace POS.Application.Services
 
             await _uow.Orders.AddAsync(order);
             await _uow.CommitAsync();
-            return order;
+            var savedOrder = await _uow.Orders.GetWithItemsAsync(order.Id) ?? throw new InvalidOperationException("Order was saved couldn't be retrive"); 
+            return _mapper.Map<OrderDto>(savedOrder);
         }
 
         public async Task<OrderDetailViewModel?> GetOrderWithDetailsAsync(int orderId)

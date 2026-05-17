@@ -52,7 +52,30 @@ namespace POS.Application.Mappings
                 .ForMember(d => d.ParentCategoryName, 
                 c => c.MapFrom(p => p.ParentCategory.Name)); //** Using in CategoryService
 
-            // ── Order ─────────────────────────────────────────────────────────
+            // ── Order to OrderDto ─────────────────────────────────────────────────────────
+            // Order → OrderDto — null-safe mapping
+            CreateMap<Order, OrderDto>()
+                .ForMember(d => d.CashierName,
+                    o => o.MapFrom(s =>
+                        s.Cashier != null
+                            ? s.Cashier.FullName
+                            : string.Empty))
+                .ForMember(d => d.BranchName,
+                    o => o.MapFrom(s =>
+                        s.Branch != null
+                            ? s.Branch.Name
+                            : string.Empty))
+                .ForMember(d => d.TableId,
+                    o => o.MapFrom(s =>
+                        s.Table != null
+                            ? s.Table.TableNumber
+                            : null))
+                .ForMember(d => d.Items,
+                    o => o.MapFrom(s => s.Items ?? new List<OrderItem>()))
+                .ForMember(d => d.Payment,
+                    o => o.MapFrom(s => s.Payments ?? new List<Payment>()));
+
+            // ── Order Detail View ─────────────────────────────────────────────────────────
             CreateMap<Order, OrderDetailViewModel>()
                 .ForMember(d => d.CashierName,
                     o => o.MapFrom(s => s.Cashier != null

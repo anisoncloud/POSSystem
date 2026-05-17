@@ -175,11 +175,13 @@ async function checkout() {
     btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
 
     try {
+        const token = document.querySelector(
+            'input[name="__RequestVerificationToken"]').value;
         const res = await fetch('/POS/Checkout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'RequestVerificationToken': document.querySelector('[name=__RequestVerificationToken]').value
+                'RequestVerificationToken': token
             },
             body: JSON.stringify(payload)
         });

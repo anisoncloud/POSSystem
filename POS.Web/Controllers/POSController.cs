@@ -125,11 +125,19 @@ namespace POS.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest( new
+                {
+                    success = false,
+                    message = "Invalid order data.",
+                    errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList()
+                });
             }
             try
             {
-                var order = await _orderService.CreateOrderAsync(dto, _branchId);
+                OrderDto order = await _orderService.CreateOrderAsync(dto, _branchId);
                 return Ok(new
                 {
                     success = true,
