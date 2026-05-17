@@ -29,7 +29,7 @@ namespace POS.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<Order> CreateOrderAsync(CreateOrderDto dto, int branchId)
+        public async Task<OrderDto> CreateOrderAsync(CreateOrderDto dto, int branchId)
         {
             var cashierId = _httpContext.HttpContext!
                 .User.FindFirstValue(ClaimTypes.NameIdentifier)!;
