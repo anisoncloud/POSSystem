@@ -60,6 +60,11 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(opt =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders()
 .AddDefaultUI();              // ✅ This generates Login, Register, Profile UI
+
+
+
+
+
 // ✅ Add Razor Pages (required for Identity UI)
 builder.Services.AddRazorPages();
 builder.Services.ConfigureApplicationCookie(opt =>

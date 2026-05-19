@@ -53,7 +53,7 @@ namespace POS.Application.Mappings
                 c => c.MapFrom(p => p.ParentCategory.Name)); //** Using in CategoryService
 
             // ── Order to OrderDto ─────────────────────────────────────────────────────────
-            // Order → OrderDto — null-safe mapping
+            // Order → OrderDto — null-safe mapping CreateMap<Source, Destination>().ForMember(Destination, MapFrom(Source))
             CreateMap<Order, OrderDto>()
                 .ForMember(d => d.CashierName,
                     o => o.MapFrom(s =>

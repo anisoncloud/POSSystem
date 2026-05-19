@@ -145,7 +145,7 @@ function selectPayment(method, btn) {
 }
 
 async function checkout() {
-    if (cart.length === 0) return;
+    /*if (cart.length === 0) return;
 
     const orderType = parseInt(document.querySelector('input[name="orderType"]:checked').value);
     const tableId = orderType === 1
@@ -156,7 +156,7 @@ async function checkout() {
     const discountValue = parseFloat(document.getElementById('discountValue').value) || 0;
 
     const payload = {
-        orderType,
+        orderType: orderType,
         tableId: tableId ? parseInt(tableId) : null,
         customerName: document.getElementById('customerName').value,
         customerPhone: document.getElementById('customerPhone').value,
@@ -168,7 +168,89 @@ async function checkout() {
             amount: parseFloat(document.getElementById('cartTotal').textContent.replace('৳', '')),
             reference: document.getElementById('paymentRef')?.value || ''
         }]
+    };*/    
+    // ── Validate cart is not empty ────────────────────────────────
+    if (cart.length === 0) {
+        showToast('Cart is empty.', 'warning');
+        return;
+    }
+
+    // ── Read order type ───────────────────────────────────────────
+    const orderTypeInput = document.querySelector(
+        'input[name="orderType"]:checked');
+    const orderType = parseInt(orderTypeInput?.value ?? '0');
+
+    // ── Read table for restaurant orders ──────────────────────────
+    const tableSelect = document.getElementById('tableSelect');
+    const tableId = (orderType === 1 && tableSelect?.value)
+        ? parseInt(tableSelect.value)
+        : null;
+
+    if (orderType === 1 && !tableId) {
+        showToast('Please select a table for restaurant order.',
+            'warning');
+        return;
+    }
+
+    // ── Read discount ─────────────────────────────────────────────
+    const discountType = parseInt(
+        document.getElementById('discountType').value ?? '0');
+    const discountValue = parseFloat(
+        document.getElementById('discountValue').value ?? '0') || 0;
+
+    // ── Calculate total ───────────────────────────────────────────
+    const totalText = document.getElementById('cartTotal')
+        .textContent.replace('৳', '').trim();
+    const total = parseFloat(totalText) || 0;
+
+    if (total <= 0) {
+        showToast('Order total must be greater than zero.',
+            'warning');
+        return;
+    }
+
+    // ── Read payment reference ────────────────────────────────────
+    const paymentRef = document
+        .getElementById('paymentRef')?.value?.trim() ?? '';
+
+    // ── Build payload — match CreateOrderDto exactly ──────────────
+    const payload = {
+        orderType: orderType,
+        tableId: tableId,
+        customerName: document.getElementById('customerName')
+            .value.trim() || null,
+        customerPhone: document.getElementById('customerPhone')
+            .value.trim() || null,
+        discountType: discountType,
+        discountValue: discountValue,
+        notes: null,
+        items: cart.map(i => ({
+            productId: i.id,
+            quantity: i.qty,
+            notes: null,
+        })),
+        payments: [{
+            method: selectedPayment,
+            amount: total,
+            reference: paymentRef || null,
+        }],
     };
+
+
+    // ── Log payload for debugging ─────────────────────────────────
+    console.log('Checkout payload:', JSON.stringify(payload, null, 2));
+
+    // ── Get CSRF token ────────────────────────────────────────────
+    const tokenInput = document.querySelector(
+        'input[name="__RequestVerificationToken"]');
+
+    if (!tokenInput) {
+        showToast('Security token missing. Refresh the page.',
+            'danger');
+        console.error('CSRF token input not found');
+        return;
+    }
+
 
     const btn = document.getElementById('checkoutBtn');
     btn.disabled = true;
@@ -185,6 +267,9 @@ async function checkout() {
             },
             body: JSON.stringify(payload)
         });
+        const rawText = await response.text();
+        console.log('Response status:', response.status);
+        console.log('Response body:', rawText);
         const data = await res.json();
         if (data.success) {
             showToast(`✓ Order ${data.invoiceNumber} completed!`, 'success');
