@@ -31,22 +31,50 @@ namespace POS.Application.Services
 
         public async Task<OrderDto> CreateOrderAsync(CreateOrderDto dto, int branchId)
         {
-            var cashierId = _httpContext.HttpContext!
+            // ── Validate cashier ──────────────────────────────────────────
+            var cashierId = _httpContext.HttpContext?
                 .User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            if (string.IsNullOrEmpty(cashierId))
+            {
+                throw new InvalidOperationException(
+                    $"Youser session expired please login");
+            }
+            var branchExists = await _uow.Branches.ExistsAsync(branchId);
+            if (!branchExists)
+            {
+                throw new InvalidOperationException(
+                    $"Branch id not found" + 
+                    $"Please contact your Admisistrotor"
+                    );
+            }
+            // ── Validate items ────────────────────────────────────────────
+            if (dto.Items == null || !dto.Items.Any())
+                throw new InvalidOperationException(
+                    "Order must have at least one item.");
+            // ── Validate payments ─────────────────────────────────────────
+            if (dto.Payments == null || !dto.Payments.Any())
+                throw new InvalidOperationException(
+                    "Order must have at least one payment.");
+
+            var paymentTotal = dto.Payments.Sum(p => p.Amount);
+            if (paymentTotal <= 0)
+                throw new InvalidOperationException(
+                    "Payment amount must be greater than zero.");
+
             var invoiceNumber = await _uow.Orders.GenerateInvoiceNumberAsync(branchId);
 
             var order = new Order
             {
-                InvoiceNumber = invoiceNumber,
-                OrderType = dto.OrderType,
-                BranchId = branchId,
-                TableId = (int)dto.TableId,
-                CustomerName = dto.CustomerName,
-                CustomerPhone = dto.CustomerPhone,
-                CashierId = cashierId,
-                Notes = dto.Notes,
-                DiscountType = dto.DiscountType,
-                DiscountValue = dto.DiscountValue,
+                InvoiceNumber   = invoiceNumber,
+                OrderType       = dto.OrderType,
+                BranchId        = branchId,
+                TableId         = (int)dto.TableId,
+                CustomerName    = dto.CustomerName,
+                CustomerPhone   = dto.CustomerPhone,
+                CashierId       = cashierId,
+                Notes           = dto.Notes,
+                DiscountType    = dto.DiscountType,
+                DiscountValue   = dto.DiscountValue,
             };
 
             decimal subTotal = 0;

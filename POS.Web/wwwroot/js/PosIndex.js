@@ -230,7 +230,7 @@ async function checkout() {
             notes: null,
         })),
         payments: [{
-            method: selectedPayment,
+            method: selectedPaymentMethod,
             amount: total,
             reference: paymentRef || null,
         }],

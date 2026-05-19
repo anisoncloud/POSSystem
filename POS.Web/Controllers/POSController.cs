@@ -137,7 +137,7 @@ namespace POS.Web.Controllers
             }
             try
             {
-                OrderDto order = await _orderService.CreateOrderAsync(dto, _branchId);
+                var order = await _orderService.CreateOrderAsync(dto, _branchId);
                 return Ok(new
                 {
                     success = true,
@@ -148,11 +148,12 @@ namespace POS.Web.Controllers
             }
             catch (InvalidOperationException ex)
             {
-
                 return BadRequest(new
                 {
                     success = false,
-                    message = ex.Message
+                    message = ex.Message,
+                    source = ex.Source,
+                    trace = ex.StackTrace
                 });
             }
         }
