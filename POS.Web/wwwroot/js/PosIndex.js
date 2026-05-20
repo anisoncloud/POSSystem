@@ -41,7 +41,7 @@ function handleProductCardClick(cardEl) {
     setTimeout(() => cardEl.classList.remove('product-card--flash'), 400);
 }
 function addToCart(product) {
-    const existing = cart.find(i => i.id === product.id);
+    const existing = cart.find(i => i.id === product.id);    
     if (existing) {
         if (existing.qty >= product.stock) {
             showToast('Insufficient stock', 'warning'); return;

@@ -22,10 +22,20 @@ else
         var productJson = System.Text.Json.JsonSerializer.Serialize(
         new
         {
-            id = product.Id,
+            @* id = product.Id,
             name = product.Name,
             price = product.SalePrice,
             stock= product.StockQuantity,
+            taxRate = product.TaxRate,
+            barcode = product.Barcode,
+            sku = product.SKU,
+            unit = product.UnitType.ToString(),
+            imageUrl = product.ImageUrl ?? string.Empty *@
+
+            id = product.Id,
+            name = product.Name,
+            price = product.SalePrice,
+            stock = product.StockQuantity,
             taxRate = product.TaxRate,
             barcode = product.Barcode,
             sku = product.SKU,
