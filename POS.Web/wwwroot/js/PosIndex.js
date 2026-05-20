@@ -217,10 +217,8 @@ async function checkout() {
     const payload = {
         orderType: orderType,
         tableId: tableId,
-        customerName: document.getElementById('customerName')
-            .value.trim() || null,
-        customerPhone: document.getElementById('customerPhone')
-            .value.trim() || null,
+        customerName: document.getElementById('customerName').value.trim() || null,
+        customerPhone: document.getElementById('customerPhone').value.trim() || null,
         discountType: discountType,
         discountValue: discountValue,
         notes: null,
