@@ -10,7 +10,7 @@ namespace POS.Domain.Entities
         public string InvoiceNumber { get; set; }= default!;
         public OrderType OrderType { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
-        public int TableId { get; set; }
+        public int? TableId { get; set; }
         public Table? Table { get; set; }
         public int BranchId { get; set; }
         public Branch Branch {  get; set; }=default!;

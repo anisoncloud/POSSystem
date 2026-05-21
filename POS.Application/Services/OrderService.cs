@@ -68,7 +68,7 @@ namespace POS.Application.Services
                 InvoiceNumber   = invoiceNumber,
                 OrderType       = dto.OrderType,
                 BranchId        = branchId,
-                TableId         = (int)dto.TableId,
+                TableId         = dto.TableId,
                 CustomerName    = dto.CustomerName,
                 CustomerPhone   = dto.CustomerPhone,
                 CashierId       = cashierId,

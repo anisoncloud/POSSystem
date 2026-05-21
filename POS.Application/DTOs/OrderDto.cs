@@ -12,8 +12,8 @@ namespace POS.Application.DTOs
         public OrderType OrderType { get; set; }
         public OrderStatus Status { get; set; }
         //Branch
-        public int BranchId {  get; set; }
-        public string BranchName { get; set; } = default!;
+        public int? BranchId {  get; set; }
+        public string? BranchName { get; set; } = default!;
 
         //Table Restaurant only
         public int? TableId {  get; set; }
@@ -24,8 +24,8 @@ namespace POS.Application.DTOs
         public string? CustomerPhone {  get; set; }
 
         //Cashire
-        public int CashierId { get; set; } = default!;
-        public string CashierName { get; set;} = default!;
+        public string CashierId { get; set; } = default!;
+        public string? CashierName { get; set;} = default!;
 
         //Financials
         public decimal SubTotal {  get; set; }
