@@ -11,7 +11,8 @@ namespace POS.Domain.Interfaces
         IOrderRepository Orders { get; }
         //IRepository<Category> Categories {  get; }
         ICategoryRepository Categories { get; }
-        IRepository<Supplier> Suppliers { get; }
+        ISupplierRepository Suppliers { get; }
+        //IRepository<Supplier> Suppliers { get; }
         IRepository<PurchaseOrder> PurchaseOrders { get; }
         IStockRepository StockMovements { get; }
         IRepository<Table> Tables { get; }

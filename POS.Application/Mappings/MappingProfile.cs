@@ -114,6 +114,12 @@ namespace POS.Application.Mappings
             CreateMap<CreateBranchDto, Branch>();
             CreateMap<UpdateBranchDto, Branch>();
 
+            // ── Supplier ─────────────────────────────────────────────────────────
+
+            CreateMap<Supplier, SupplierDto>()
+                .ForMember(x=>x.TotalProducts, o=>o.Ignore());
+            CreateMap<CreateSupplierDto, Supplier>();
+
         }
     }
 }

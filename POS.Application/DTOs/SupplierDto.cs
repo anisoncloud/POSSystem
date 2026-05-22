@@ -12,5 +12,6 @@ namespace POS.Application.DTOs
         public string? Email { get; set; }
         public string? Phone { get; set; }
         public string? Address { get; set; }
+        public int? TotalProducts {  get; set; }
     }
 }

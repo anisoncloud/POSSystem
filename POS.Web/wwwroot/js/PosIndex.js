@@ -257,7 +257,7 @@ async function checkout() {
     try {
         const token = document.querySelector(
             'input[name="__RequestVerificationToken"]').value;
-        const res = await fetch('/POS/Checkout', {
+        const response = await fetch('/POS/Checkout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -268,7 +268,8 @@ async function checkout() {
         const rawText = await response.text();
         console.log('Response status:', response.status);
         console.log('Response body:', rawText);
-        const data = await res.json();
+        //const data = await res.json();
+        const data = JSON.parse(rawText);
         if (data.success) {
             showToast(`✓ Order ${data.invoiceNumber} completed!`, 'success');
             clearCart();

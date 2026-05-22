@@ -45,6 +45,7 @@ builder.Services.AddScoped<IPdfInvoiceService, PdfInvoiceService>();
 builder.Services.AddScoped<ITableService, TableService>();
 builder.Services.AddScoped<IBranchService, BranchService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ISupplierService, SupplierService>();
 builder.Services.AddHttpContextAccessor();
 
 // ── Identity ──────────────────────────────────────────────────────────────────
