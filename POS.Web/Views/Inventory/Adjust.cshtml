@@ -1,0 +1,73 @@
+﻿<!-- POS.Web/Views/Inventory/Adjust.cshtml -->
+@model POS.Application.DTOs.StockAdjustmentDto
+@{
+    ViewData["Title"] = "Adjust Stock";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header"><h5 class="mb-0">Stock Adjustment</h5></div>
+            <div class="card-body">
+                <form asp-action="Adjust" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="ProductId" class="form-label fw-semibold">Product</label>
+                        <select asp-for="ProductId" class="form-select">
+                            <option value="">-- Select Product --</option>
+                            @foreach (var p in ViewBag.Products
+                                as IEnumerable<POS.Application.DTOs.ProductDto>)
+                            {
+                                <option value="@p.Id">
+                                    @p.Name (Stock: @p.StockQuantity)
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="ProductId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="MovementType" class="form-label fw-semibold">Type</label>
+                        <select asp-for="MovementType" class="form-select"
+                                asp-items="Html.GetEnumSelectList<POS.Domain.Enums.StockMovementType>()">
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Quantity" class="form-label fw-semibold">
+                            Quantity (use negative for stock out)
+                        </label>
+                        <input asp-for="Quantity" class="form-control" type="number">
+                        <span asp-validation-for="Quantity" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Reference" class="form-label fw-semibold">Reference</label>
+                        <input asp-for="Reference" class="form-control"
+                               placeholder="e.g. PO-001, Manual adjustment">
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Notes" class="form-label fw-semibold">Notes</label>
+                        <textarea asp-for="Notes" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-warning px-4">
+                            Apply Adjustment
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

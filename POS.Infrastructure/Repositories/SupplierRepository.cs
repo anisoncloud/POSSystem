@@ -1,4 +1,5 @@
-﻿using POS.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using POS.Domain.Entities;
 using POS.Domain.Interfaces;
 using POS.Infrastructure.Data;
 using System;
@@ -13,19 +14,22 @@ namespace POS.Infrastructure.Repositories
         {
         }
 
-        public Task<IEnumerable<Supplier>> GetAllActiveAsync()
+        public async Task<IEnumerable<Supplier>> GetAllActiveAsync()
         {
-            throw new NotImplementedException();
+            return await _dbSet
+                .Where(s=>!s.IsDeleted)
+                .OrderByDescending(s=>s.Id)
+                .ToListAsync();
         }
 
-        public Task<Supplier?> GetByNameAsync(string name)
+        public async Task<Supplier?> GetByNameAsync(string name)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> HasProductsAsync(int supplierId)
-        {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(nameof(name)))
+            {
+                return null;
+            }
+            return await _dbSet
+                .FirstOrDefaultAsync(s => s.Name.Replace(" ", "").ToLower() == name.Replace(" ", "").ToLower());
         }
     }
 }

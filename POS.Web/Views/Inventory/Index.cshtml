@@ -1,0 +1,64 @@
+﻿<!-- POS.Web/Views/Inventory/Index.cshtml -->
+@model IEnumerable<POS.Application.DTOs.StockMovementDto>
+@{
+    ViewData["Title"] = "Stock Movements";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Stock Movements</h4>
+    <div class="d-flex gap-2">
+        <a asp-action="Adjust" class="btn btn-warning">Adjust Stock</a>
+        <a asp-action="PurchaseOrders" class="btn btn-primary">Purchase Orders</a>
+        <a asp-action="Suppliers" class="btn btn-outline-secondary">Suppliers</a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Date</th>
+                <th>Product</th>
+                <th>Type</th>
+                <th>Quantity</th>
+                <th>Balance After</th>
+                <th>Reference</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var m in Model)
+            {
+                <tr>
+                    <td>@m.CreatedAt.ToString("dd MMM yyyy HH:mm")</td>
+                    <td class="fw-semibold">@m.ProductName</td>
+                    <td>
+                        <span class="badge
+                            @(m.MovementType == POS.Domain.Enums.StockMovementType.Purchase
+                                  ? "bg-success"
+                                  : m.MovementType == POS.Domain.Enums.StockMovementType.Sale
+                                      ? "bg-primary"
+                                      : "bg-warning text-dark")">
+                            @m.MovementTypeDisplay
+                        </span>
+                    </td>
+                    <td>
+                        <span class="fw-bold
+                            @(m.Quantity > 0 ? "text-success" : "text-danger")">
+                            @m.QuantityDisplay
+                        </span>
+                    </td>
+                    <td>@m.BalanceAfter</td>
+                    <td><small class="text-muted">@m.Reference</small></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

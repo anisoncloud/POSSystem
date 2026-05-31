@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.Metadata;
 using POS.Application.DTOs;
 using POS.Application.Interfaces;
 using POS.Domain.Entities;
@@ -14,48 +15,48 @@ namespace POS.Application.Services
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
 
-        public SupplierService(IUnitOfWork unitOfWork, IMapper mapper)
+        public SupplierService(IUnitOfWork uow, IMapper mapper)
         {
-            _uow = unitOfWork;
+            _uow = uow;
             _mapper = mapper;
         }
 
         public async Task<SupplierDto> CreateSupplierAsync(CreateSupplierDto dto)
         {
-            if (dto==null)
+            if (dto == null)
             {
-                throw new ArgumentNullException(nameof(dto)); 
+                throw new ArgumentNullException(nameof(dto));
             }
-            if (string.IsNullOrWhiteSpace(dto.Name))
+            if (string.IsNullOrWhiteSpace(nameof(dto.Name)))
             {
-                throw new ArgumentException("Suppliers Can not be empty", nameof(dto.Name));   
+                throw new ArgumentException($"Supplier name can not be empty", nameof(dto.Name));
             }
-            var existing = _uow.Suppliers.GetByNameAsync(dto.Name);
-            if (existing !=null )
+            var exists = await _uow.Suppliers.GetByNameAsync(dto.Name);
+            if (exists !=null)
             {
                 throw new InvalidOperationException(
-                    $"This Supplier Name {dto.Name} You provided is already exists"
-                    );
+                    $"A Supplier with the name'{dto.Name}' is already exists");
             }
             var supplier = _mapper.Map<Supplier>(dto);
             await _uow.Suppliers.AddAsync(supplier);
             await _uow.CommitAsync();
-            return _mapper.Map<SupplierDto>(supplier);
+            return _mapper.Map<SupplierDto>(supplier);   
         }
 
-        public Task<IEnumerable<SupplierDto>> GetAllSupplierAsync()
+        public async Task<IEnumerable<SupplierDto>> GetAllActiveAsync()
         {
-            throw new NotImplementedException();
+            var supplier = await _uow.Suppliers.GetAllActiveAsync();
+            return _mapper.Map<IEnumerable<SupplierDto>>(supplier);
         }
 
-        public Task<SupplierDto> GetSupplerAsync(int supplierId)
+        public async Task<SupplierDto?> GetByNameAsynic(string name)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<SupplierDto?> GetSupplerWithProductAsync(int supplierId)
-        {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(nameof(name)))
+            {
+                return null;
+            }
+            var suppler = await _uow.Suppliers.GetByNameAsync(name);
+            return _mapper.Map<SupplierDto>(suppler);
         }
     }
 }

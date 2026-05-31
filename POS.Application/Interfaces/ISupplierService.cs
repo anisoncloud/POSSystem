@@ -7,9 +7,8 @@ namespace POS.Application.Interfaces
 {
     public interface ISupplierService
     {
+        Task<SupplierDto?> GetByNameAsynic(string name);
+        Task<IEnumerable<SupplierDto>> GetAllActiveAsync();
         Task<SupplierDto> CreateSupplierAsync(CreateSupplierDto dto);
-        Task<SupplierDto> GetSupplerAsync(int supplierId);
-        Task<IEnumerable<SupplierDto>> GetAllSupplierAsync();
-        Task<SupplierDto?> GetSupplerWithProductAsync(int supplierId);
     }
 }

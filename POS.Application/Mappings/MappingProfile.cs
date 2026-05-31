@@ -120,6 +120,9 @@ namespace POS.Application.Mappings
                 .ForMember(x=>x.TotalProducts, o=>o.Ignore());
             CreateMap<CreateSupplierDto, Supplier>();
 
+
+            //---StockMovement-----------------------------------------------------
+            CreateMap<StockMovement, StockMovementDto>();
         }
     }
 }
