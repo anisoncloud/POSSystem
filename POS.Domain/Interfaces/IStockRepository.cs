@@ -9,6 +9,11 @@ namespace POS.Domain.Interfaces
     public interface IStockRepository : IRepository<StockMovement>
     {
         Task<IEnumerable<StockMovement>> GetProductHistoryAsync(int productId);
-        Task RecordMovementAsync(int productId, int qty, StockMovementType type, string? reference);
+        Task<IEnumerable<StockMovement>> GetAllByBranchAsync(int branchId);
+        Task RecordMovementAsync(
+            int productId, 
+            int qty, 
+            StockMovementType type, 
+            string? reference);
     }
 }

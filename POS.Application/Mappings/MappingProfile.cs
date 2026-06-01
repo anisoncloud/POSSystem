@@ -122,13 +122,17 @@ namespace POS.Application.Mappings
 
 
             //---StockMovement-----------------------------------------------------
-            CreateMap<StockMovement, StockMovementDto>();
+            // StockMovement → StockMovementDto — null-safe mapping CreateMap<Source, Destination>().ForMember(Destination, MapFrom(Source))
+            CreateMap<StockMovement, StockMovementDto>()
+                .ForMember(s=>s.ProductName, o=>o.MapFrom(x=>x.Product.Name));
 
             //-----Purchase Order-------------------------------------------------
+            // PurchaseOrder → PurchaseOrderDto — null-safe mapping CreateMap<Source, Destination>().ForMember(Destination, MapFrom(Source))
             CreateMap<PurchaseOrder, PurchaseOrderDto>();
-            
+
 
             //-----PurchaseOrderItem----------------------------------------------
+            // PurchaseOrderItem → PurchaseOrderItemDto — null-safe mapping CreateMap<Source, Destination>().ForMember(Destination, MapFrom(Source))
             CreateMap<PurchaseOrderItem, PurchaseOrderItemDto>();
         }
     }

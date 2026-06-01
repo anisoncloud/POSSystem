@@ -15,11 +15,22 @@ namespace POS.Infrastructure.Repositories
         {
         }
 
+        public async Task<IEnumerable<StockMovement>> GetAllByBranchAsync(int branchId)
+        {
+            return await _dbSet
+                .Include(s => s.Product)
+                .Where(s => s.Product.BranchId == branchId && !s.IsDeleted)
+                .OrderByDescending(s => s.CreatedAt)
+                .AsNoTracking()
+                .ToListAsync();
+
+        }
+
         public async Task<IEnumerable<StockMovement>> GetProductHistoryAsync(int productId)
         {
             return await _dbSet
                 .Include(s => s.Product)
-                .Where(s => s.ProductId == productId)
+                .Where(s => s.ProductId == productId && !s.IsDeleted)
                 .OrderByDescending(s => s.CreatedAt)
                 .AsNoTracking()
                 .ToListAsync();
@@ -41,5 +52,7 @@ namespace POS.Infrastructure.Repositories
             };
             await _dbSet.AddAsync(movement);
         }
+
+
     }
 }

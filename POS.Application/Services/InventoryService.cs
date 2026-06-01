@@ -29,8 +29,8 @@ namespace POS.Application.Services
 
         public async Task<IEnumerable<StockMovementDto>> GetAllMovementsAsync(int branchId)
         {
-            var movements = await _uow.StockMovements                
-                .FindAsync(s => s.Product.BranchId == branchId);
+            //var movements = await _uow.StockMovements.FindAsync(s => s.Product.BranchId == branchId);
+            var movements = await _uow.StockMovements.GetAllByBranchAsync(branchId);
             return _mapper.Map<IEnumerable<StockMovementDto>>(
                 movements.OrderByDescending(m => m.CreatedAt));
         }
