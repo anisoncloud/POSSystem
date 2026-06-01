@@ -123,6 +123,13 @@ namespace POS.Application.Mappings
 
             //---StockMovement-----------------------------------------------------
             CreateMap<StockMovement, StockMovementDto>();
+
+            //-----Purchase Order-------------------------------------------------
+            CreateMap<PurchaseOrder, PurchaseOrderDto>();
+            
+
+            //-----PurchaseOrderItem----------------------------------------------
+            CreateMap<PurchaseOrderItem, PurchaseOrderItemDto>();
         }
     }
 }

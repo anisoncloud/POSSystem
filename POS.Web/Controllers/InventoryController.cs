@@ -100,6 +100,14 @@ namespace POS.Web.Controllers
 
             return PartialView("_PurchaseOrderDetail", po);
         }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReceivePurchaseOrder(int id)
+        {
+            await _inventoryService.ReceivePurchaseOrderAsync(id);
+            TempData["success"] = "Purchase order received and stock update";
+            return RedirectToAction(nameof(PurchaseOrders));
+        }
         // ── Suppliers ─────────────────────────────────────────────────────────
         [HttpGet]
         public async Task<IActionResult> Suppliers()
